@@ -8,17 +8,36 @@ const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expires
 exports.register = async (req, res) => {
   try {
     let { name, email, mobile, password } = req.body;
-    if (email) email = email.toLowerCase();
+    
+    // Clean up empty strings to avoid unique constraint errors
+    if (email) email = email.toLowerCase().trim(); else email = undefined;
+    if (mobile) mobile = mobile.trim(); else mobile = undefined;
+
     if (!name || !password || (!email && !mobile))
       return res.status(400).json({ message: 'Name, password, and email or mobile are required' });
-    const existing = await User.findOne({ $or: [{ email }, { mobile }] });
-    if (existing) return res.status(400).json({ message: 'User already exists' });
+
+    // Build query safely
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (mobile) orConditions.push({ mobile });
+
+    const existing = await User.findOne({ $or: orConditions });
+    if (existing) return res.status(400).json({ message: 'User already exists with this email or mobile' });
+
     const otp = generateOTP();
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    
     const user = await User.create({ name, email, mobile, password, otp, otpExpiry });
-    if (email) { try { await sendOTPEmail(email, otp); } catch (e) { console.log('Email error:', e.message); } }
+    
+    if (email) { 
+      try { await sendOTPEmail(email, otp); } 
+      catch (e) { console.log('Email error:', e.message); } 
+    }
+    
     res.status(201).json({ message: 'OTP sent. Please verify.', userId: user._id, otp });
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { 
+    res.status(500).json({ message: err.message }); 
+  }
 };
 
 exports.verifyOTP = async (req, res) => {
