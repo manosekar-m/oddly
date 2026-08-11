@@ -69,7 +69,8 @@ exports.login = async (req, res) => {
 exports.adminLogin = async (req, res) => {
   try {
     let { email, password } = req.body;
-    if (email) email = email.toLowerCase();
+    if (email) email = email.toLowerCase().trim();
+    if (password) password = password.trim();
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       let admin = await User.findOne({ email, role: 'admin' });
       if (!admin) admin = await User.create({ name: 'Admin', email, password, role: 'admin', isVerified: true });
