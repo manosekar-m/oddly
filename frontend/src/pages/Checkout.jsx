@@ -17,7 +17,7 @@ const indianStates = [
 
 // ✅ Change this to YOUR actual UPI ID
 const YOUR_UPI_ID = '7448432423@superyes';
-const YOUR_UPI_NAME = 'Clothiq Store';
+const YOUR_UPI_NAME = 'ODDLY Store';
 
 export default function Checkout() {
   const { cart, cartTotal, finalTotal, discountAmount, coupon, clearCart } = useCart();

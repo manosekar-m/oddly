@@ -23,8 +23,9 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/coupons', require('./routes/coupons'));
 app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/queries', require('./routes/queries'));
+app.use('/api/settings', require('./routes/settings'));
 
-app.get('/', (req, res) => res.send('Clothiq API running...'));
+app.get('/', (req, res) => res.send('Oddly API running...'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

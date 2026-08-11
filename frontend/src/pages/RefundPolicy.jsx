@@ -6,7 +6,7 @@ export default function RefundPolicy() {
       <div style={{ color: 'var(--text2)', fontSize: 16, lineHeight: 1.8 }}>
         <p style={{ marginBottom: 16 }}>
           <strong>Returns & Exchanges</strong><br />
-          We want you to be completely satisfied with your purchase from Clothiq. We accept returns and exchanges within 7 days of order delivery. The items must be unused, unwashed, and in their original condition with all tags attached.
+          We want you to be completely satisfied with your purchase from ODDLY. We accept returns and exchanges within 7 days of order delivery. The items must be unused, unwashed, and in their original condition with all tags attached.
         </p>
 
         <p style={{ marginBottom: 16 }}>
@@ -16,7 +16,7 @@ export default function RefundPolicy() {
 
         <p style={{ marginBottom: 16 }}>
           <strong>How to Initiate a Return</strong><br />
-          To initiate a return or exchange, please contact us at <strong>support@clothiq.in</strong> with your order number and reason for return.
+          To initiate a return or exchange, please contact us at <strong>support@oddly.in</strong> with your order number and reason for return.
         </p>
       </div>
     </div>

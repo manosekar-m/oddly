@@ -3,7 +3,7 @@ export default function About() {
     <div>
       <div style={{ background: 'linear-gradient(135deg, #0e0e0e, #1a1500)', padding: '80px 0', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, marginBottom: 16, color: 'var(--accent)' }}>About Clothiq</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, marginBottom: 16, color: 'var(--accent)' }}>About ODDLY</h1>
           <p style={{ color: 'var(--text2)', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>Redefining casual wear with premium craftsmanship</p>
         </div>
       </div>
@@ -25,7 +25,7 @@ export default function About() {
         <div style={{ textAlign: 'center', padding: '40px 0' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 36, marginBottom: 16 }}>Our Story</h2>
           <p style={{ color: 'var(--text2)', maxWidth: 720, margin: '0 auto', fontSize: 15, lineHeight: 1.9 }}>
-            Clothiq was born in 2026 from a simple belief: everyday wear should feel extraordinary. We started as a small team of designers and fabric enthusiasts, sourcing the best cotton from farms across India and collaborating with emerging artists to create designs that spark conversation.
+            ODDLY was born in 2026 from a simple belief: everyday wear should feel extraordinary. We started as a small team of designers and fabric enthusiasts, sourcing the best cotton from farms across India and collaborating with emerging artists to create designs that spark conversation.
           </p>
         </div>
       </div>

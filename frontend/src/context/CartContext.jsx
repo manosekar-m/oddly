@@ -4,14 +4,14 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem('clothiq_cart');
+    const saved = localStorage.getItem('oddly_cart');
     return saved ? JSON.parse(saved) : [];
   });
 
   const [coupon, setCoupon] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('clothiq_cart', JSON.stringify(cart));
+    localStorage.setItem('oddly_cart', JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product, size) => {

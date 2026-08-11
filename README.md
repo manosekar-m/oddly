@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="https://img.icons8.com/nolan/96/1A6DFF/C822FF/online-store.png" alt="Clothiq Logo" />
-  <h1>🛍️ Clothiq</h1>
+  <img src="https://img.icons8.com/nolan/96/1A6DFF/C822FF/online-store.png" alt="Oddly Logo" />
+  <h1>🛍️ Oddly</h1>
   <p><strong>A modern, high-performance e-commerce platform for premium apparel.</strong></p>
   
   <p>
@@ -16,9 +16,9 @@
 
 ## 🌟 About The Project
 
-**Clothiq** is a sleek, fully responsive e-commerce web application built on the MERN stack (MongoDB, Express, React, Node.js). It delivers a seamless shopping experience for users with intuitive cart management, dynamic promo codes, and real-time order tracking. 
+**Oddly** is a sleek, fully responsive e-commerce web application built on the MERN stack (MongoDB, Express, React, Node.js). It delivers a seamless shopping experience for users with intuitive cart management, dynamic promo codes, and real-time order tracking. 
 
-For store owners, Clothiq provides a comprehensive **Admin Dashboard** to effortlessly manage products, track revenue analytics, fulfill orders, process customer queries, and generate custom discount coupons.
+For store owners, Oddly provides a comprehensive **Admin Dashboard** to effortlessly manage products, track revenue analytics, fulfill orders, process customer queries, and generate custom discount coupons.
 
 ---
 
@@ -65,8 +65,8 @@ For store owners, Clothiq provides a comprehensive **Admin Dashboard** to effort
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/manosekar-m/Clothiq.git
-cd Clothiq
+git clone https://github.com/manosekar-m/Oddly.git
+cd Oddly
 ```
 
 ### 2. Backend Setup
@@ -104,7 +104,7 @@ The application will be running at `http://localhost:5173`.
 
 To access the admin dashboard, you can use the default seeded admin account:
 
-- **Email:** `admin@clothiq.com`
+- **Email:** `admin@oddly.com`
 - **Password:** `admin123`
 
 Alternatively, you can create a new account and manually change the `role` field to `admin` directly in your MongoDB database.

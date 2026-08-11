@@ -52,7 +52,7 @@ export default function AdminLogin() {
             fontSize: 32, 
             color: 'var(--accent)',
             marginBottom: 8
-          }}>Clothiq</h1>
+          }}>ODDLY</h1>
           <p style={{ color: 'var(--text2)', fontSize: 14 }}>Administrator Portal</p>
         </div>
 
@@ -61,7 +61,7 @@ export default function AdminLogin() {
             <label className="label">Admin Email</label>
             <input 
               type="email" 
-              placeholder="admin@clothiq.com"
+              placeholder="admin@oddly.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

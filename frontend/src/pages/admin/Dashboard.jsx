@@ -8,7 +8,8 @@ import {
   FiLogOut, 
   FiExternalLink,
   FiTag,
-  FiMessageSquare
+  FiMessageSquare,
+  FiSettings
 } from 'react-icons/fi';
 
 export default function Dashboard() {
@@ -27,6 +28,7 @@ export default function Dashboard() {
     { name: 'Coupons', path: '/admin/coupons', icon: <FiTag /> },
     { name: 'Queries', path: '/admin/queries', icon: <FiMessageSquare /> },
     { name: 'Users', path: '/admin/users', icon: <FiUsers /> },
+    { name: 'Settings', path: '/admin/settings', icon: <FiSettings /> },
   ];
 
   return (
@@ -51,7 +53,7 @@ export default function Dashboard() {
             alignItems: 'center',
             gap: 10
           }}>
-            Clothiq <span style={{ fontSize: 10, padding: '2px 6px', background: 'rgba(232, 201, 126, 0.1)', borderRadius: 4, color: 'var(--accent)', letterSpacing: 1 }}>ADMIN</span>
+            ODDLY <span style={{ fontSize: 10, padding: '2px 6px', background: 'rgba(232, 201, 126, 0.1)', borderRadius: 4, color: 'var(--accent)', letterSpacing: 1 }}>ADMIN</span>
           </h1>
         </div>
 

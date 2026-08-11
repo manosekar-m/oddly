@@ -45,9 +45,9 @@ export default function Contact() {
         {/* Left — Info Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {[
-            { icon: <FiMail size={22} />, label: 'Email Us', value: 'support@clothiq.com', sub: 'We reply within 24 hours' },
+            { icon: <FiMail size={22} />, label: 'Email Us', value: 'support@oddly.com', sub: 'We reply within 24 hours' },
             { icon: <FiPhone size={22} />, label: 'Call Us', value: '+91 74484 32423', sub: 'Mon–Sat, 10am–6pm IST' },
-            { icon: <FiMapPin size={22} />, label: 'Visit Us', value: 'Tamil Nadu, India', sub: 'Clothiq HQ' },
+            { icon: <FiMapPin size={22} />, label: 'Visit Us', value: 'Tamil Nadu, India', sub: 'ODDLY HQ' },
           ].map(item => (
             <div key={item.label} style={{
               background: 'var(--bg2)', border: '1px solid var(--border)',

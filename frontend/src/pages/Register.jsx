@@ -52,7 +52,7 @@ export default function Register() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, background: 'var(--bg)' }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 36, color: 'var(--accent)' }}>Clothiq</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 36, color: 'var(--accent)' }}>ODDLY</h1>
           <p style={{ color: 'var(--text2)', fontSize: 14, marginTop: 6 }}>{step === 1 ? 'Create your account' : 'Verify your email'}</p>
         </div>
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 16, padding: 32 }}>

@@ -28,13 +28,14 @@ import Orders from './pages/admin/Orders';
 import Users from './pages/admin/Users';
 import Coupons from './pages/admin/Coupons';
 import Queries from './pages/admin/Queries';
+import Settings from './pages/admin/Settings';
 
 // ✅ Wrapper: redirects to /register if not logged in
 function AuthGuard({ children }) {
   const { user, loading } = useAuth();
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, color: 'var(--accent)' }}>Clothiq</div>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, color: 'var(--accent)' }}>ODDLY</div>
       <div style={{ color: 'var(--text2)', fontSize: 14 }}>Loading...</div>
     </div>
   );
@@ -62,6 +63,7 @@ export default function App() {
               <Route path="users" element={<Users />} />
               <Route path="coupons" element={<Coupons />} />
               <Route path="queries" element={<Queries />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
 
             {/* ── Auth pages (public, no guard) ── */}
