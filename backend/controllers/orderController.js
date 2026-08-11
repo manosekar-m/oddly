@@ -44,7 +44,7 @@ exports.placeOrder = async (req, res) => {
     const paymentId = `UPI-${uuidv4().slice(0, 8).toUpperCase()}`;
 
     // Handle payment screenshot if uploaded
-    const paymentScreenshot = req.file ? `/uploads/${req.file.filename}` : '';
+    const paymentScreenshot = req.file ? req.file.path : '';
 
     const order = await Order.create({
       user: req.user._id,

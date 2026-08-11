@@ -4,13 +4,9 @@ const multer = require('multer');
 const { placeOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus } = require('../controllers/orderController');
 const { protect, adminOnly } = require('../middleware/auth');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, `payment-${Date.now()}-${file.originalname}`),
-});
-const upload = multer({ storage });
+const { uploadCloud } = require('../config/cloudinary');
 
-router.post('/', protect, upload.single('paymentScreenshot'), placeOrder);
+router.post('/', protect, uploadCloud.single('paymentScreenshot'), placeOrder);
 router.get('/my', protect, getMyOrders);
 router.get('/admin/all', protect, adminOnly, getAllOrders);
 router.get('/', protect, adminOnly, getAllOrders);

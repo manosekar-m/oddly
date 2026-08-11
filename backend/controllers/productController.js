@@ -27,7 +27,7 @@ exports.getProductById = async (req, res) => {
 exports.addProduct = async (req, res) => {
   try {
     const { name, description, price, discountedPrice, sizes, isNewArrival, category, images: bodyImages } = req.body;
-    let images = req.files ? req.files.map(f => f.filename) : [];
+    let images = req.files ? req.files.map(f => f.path) : [];
     if (bodyImages && Array.isArray(bodyImages)) {
       images = [...images, ...bodyImages];
     }
@@ -62,7 +62,7 @@ exports.updateProduct = async (req, res) => {
     }
     // If new images uploaded, add them
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(f => `/uploads/${f.filename}`);
+      const newImages = req.files.map(f => f.path);
       product.images = [...product.images, ...newImages].slice(0, 5);
     }
 
@@ -75,11 +75,8 @@ exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    // Delete images from uploads folder
-    product.images.forEach(imgPath => {
-      const fullPath = path.join(__dirname, '..', imgPath);
-      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-    });
+    // Images are now hosted on Cloudinary, so no local file deletion is required.
+    // (Optional: add logic to delete from Cloudinary using cloudinary.uploader.destroy)
     await Product.findByIdAndDelete(req.params.id);
     res.json({ message: 'Product deleted successfully' });
   } catch (err) { res.status(500).json({ message: err.message }); }
