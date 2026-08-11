@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
+import { FiSearch, FiChevronDown } from 'react-icons/fi';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -9,6 +10,24 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [sortBy, setSortBy] = useState('newest');
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef(null);
+
+  const sortOptions = [
+    { value: 'newest', label: 'Newest First' },
+    { value: 'price-low', label: 'Price: Low to High' },
+    { value: 'price-high', label: 'Price: High to Low' }
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     axios.get('/products')
@@ -99,7 +118,7 @@ export default function Home() {
             
             <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <div className="search-wrapper">
-                <span className="search-icon">🔍</span>
+                <FiSearch className="search-icon" />
                 <input 
                   placeholder="Search premium apparel..." 
                   value={search} 
@@ -108,24 +127,30 @@ export default function Home() {
                 />
               </div>
 
-              <select 
-                value={sortBy} 
-                onChange={e => setSortBy(e.target.value)}
-                style={{ 
-                  background: 'rgba(255,255,255,0.03)', 
-                  border: '1px solid rgba(255,255,255,0.1)', 
-                  borderRadius: 30, 
-                  padding: '10px 20px', 
-                  color: '#fff', 
-                  fontSize: 13,
-                  width: 'auto',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="newest">Newest First</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-              </select>
+              <div className="custom-select-wrapper" ref={sortRef} onClick={() => setSortOpen(!sortOpen)}>
+                <div className={`premium-select ${sortOpen ? 'open' : ''}`}>
+                  {sortOptions.find(opt => opt.value === sortBy)?.label || 'Newest First'}
+                </div>
+                <FiChevronDown className={`select-icon ${sortOpen ? 'open' : ''}`} />
+                
+                {sortOpen && (
+                  <div className="custom-options-menu">
+                    {sortOptions.map(opt => (
+                      <div 
+                        key={opt.value} 
+                        className={`custom-option ${sortBy === opt.value ? 'active' : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSortBy(opt.value);
+                          setSortOpen(false);
+                        }}
+                      >
+                        {opt.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -333,32 +358,138 @@ export default function Home() {
 
         .search-wrapper {
           position: relative;
-          min-width: 280px;
+          min-width: 320px;
+          flex: 1;
         }
 
         .search-icon {
           position: absolute;
-          left: 14px;
+          left: 20px;
           top: 50%;
           transform: translateY(-50%);
-          font-size: 14px;
-          opacity: 0.6;
+          font-size: 18px;
+          color: var(--text2);
+          pointer-events: none;
+          transition: color 0.3s ease;
+        }
+
+        .search-wrapper:focus-within .search-icon {
+          color: var(--accent);
         }
 
         .search-input {
           width: 100%;
-          padding: 14px 14px 14px 40px;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 30px;
-          transition: all 0.3s ease;
+          padding: 16px 20px 16px 52px;
+          background: rgba(22, 22, 22, 0.6);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 100px;
+          transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
           color: #fff;
+          font-size: 14px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .search-input::placeholder {
+          color: rgba(255, 255, 255, 0.4);
         }
 
         .search-input:focus {
+          background: rgba(26, 26, 26, 0.8);
+          border-color: rgba(232, 201, 126, 0.4);
+          box-shadow: 0 0 0 4px rgba(232, 201, 126, 0.1), 0 10px 30px rgba(0,0,0,0.3);
+          outline: none;
+        }
+
+        .custom-select-wrapper {
+          position: relative;
+          min-width: 180px;
+          user-select: none;
+        }
+
+        .premium-select {
+          width: 100%;
+          background: rgba(22, 22, 22, 0.6);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 100px;
+          padding: 16px 44px 16px 24px;
+          color: #fff;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .premium-select:hover, .premium-select.open {
+          background: rgba(26, 26, 26, 0.8);
+          border-color: rgba(232, 201, 126, 0.3);
+        }
+
+        .premium-select.open {
+          box-shadow: 0 0 0 4px rgba(232, 201, 126, 0.1);
+        }
+
+        .select-icon {
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--text2);
+          pointer-events: none;
+          font-size: 18px;
+          transition: transform 0.3s ease;
+        }
+        
+        .select-icon.open {
+          transform: translateY(-50%) rotate(180deg);
+          color: var(--accent);
+        }
+        
+        .custom-options-menu {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          width: 100%;
+          background: rgba(22, 22, 22, 0.85);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 16px;
+          padding: 8px;
+          z-index: 100;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+          animation: slideDown 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+          transform-origin: top;
+        }
+
+        @keyframes slideDown {
+          from { opacity: 0; transform: scaleY(0.95); }
+          to { opacity: 1; transform: scaleY(1); }
+        }
+
+        .custom-option {
+          padding: 12px 16px;
+          color: var(--text2);
+          font-size: 14px;
+          font-weight: 500;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .custom-option:hover {
           background: rgba(255, 255, 255, 0.05);
-          border-color: var(--accent);
-          box-shadow: 0 0 15px rgba(232, 201, 126, 0.1);
+          color: #fff;
+        }
+
+        .custom-option.active {
+          background: rgba(232, 201, 126, 0.1);
+          color: var(--accent);
         }
 
         .product-grid {
