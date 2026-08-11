@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const instance = axios.create({ baseURL: '/api' });
+const baseURL = import.meta.env.VITE_API_URL || '/api';
+const instance = axios.create({ baseURL });
 
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('oddly_token');
