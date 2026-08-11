@@ -45,60 +45,62 @@ function AuthGuard({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <WishlistProvider>
-        <CartProvider>
-          <BrowserRouter>
-          <Toaster
-            position="top-right"
-            toastOptions={{ style: { background: '#1e1e1e', color: '#f0ede8', border: '1px solid #2e2e2e' } }}
-          />
-          <Routes>
-            {/* ── Admin Routes (no Navbar/Footer) ── */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>}>
-              <Route index element={<Overview />} />
-              <Route path="products" element={<Products />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="users" element={<Users />} />
-              <Route path="coupons" element={<Coupons />} />
-              <Route path="queries" element={<Queries />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
+    <BrowserRouter>
+      <AuthProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <Toaster
+              position="top-right"
+              toastOptions={{ style: { background: '#1e1e1e', color: '#f0ede8', border: '1px solid #2e2e2e' } }}
+            />
+            <Routes>
+              {/* ── Admin Routes (no Navbar/Footer) ── */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>}>
+                <Route index element={<Overview />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="users" element={<Users />} />
+                <Route path="coupons" element={<Coupons />} />
+                <Route path="queries" element={<Queries />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
 
-            {/* ── Auth pages (public, no guard) ── */}
-            <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
-            <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+              {/* ── Auth pages (public, no guard) ── */}
+              <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+              <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
 
-            {/* ── All other pages require login ── */}
-            <Route path="/*" element={
-              <AuthGuard>
+              {/* ── Main Layout ── */}
+              <Route path="/*" element={
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                   <Navbar />
                   <main style={{ flex: 1 }}>
                     <Routes>
+                      {/* Public Store Pages */}
                       <Route path="/" element={<Home />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/product/:id" element={<ProductDetail />} />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/refund-policy" element={<RefundPolicy />} />
                       <Route path="/contact" element={<Contact />} />
+                      
+                      {/* Protected Store Pages */}
+                      <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
+                      <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
+                      <Route path="/profile" element={<AuthGuard><Profile /></AuthGuard>} />
+                      <Route path="/wishlist" element={<AuthGuard><Wishlist /></AuthGuard>} />
+                      
                       {/* Catch-all redirect */}
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </main>
                   <Footer />
                 </div>
-              </AuthGuard>
-            } />
-          </Routes>
-        </BrowserRouter>
-      </CartProvider>
-    </WishlistProvider>
-  </AuthProvider>
+              } />
+            </Routes>
+          </CartProvider>
+        </WishlistProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

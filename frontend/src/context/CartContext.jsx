@@ -1,8 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem('oddly_cart');
     return saved ? JSON.parse(saved) : [];
@@ -15,13 +20,18 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
   const addToCart = (product, size) => {
+    if (!user) {
+      toast.error('Please create an account to add items to your cart.');
+      navigate('/register');
+      return;
+    }
+
     const sizeObj = product.sizes.find(s => s.size === size);
     const maxStock = sizeObj ? sizeObj.quantity : 1;
 
     setCart(prev => {
       const existing = prev.find(i => i.productId === product._id && i.size === size);
       if (existing) {
-        // Don't exceed stock
         if (existing.quantity >= maxStock) return prev;
         return prev.map(i =>
           i.productId === product._id && i.size === size
@@ -36,7 +46,7 @@ export const CartProvider = ({ children }) => {
         image: product.images[0],
         size,
         quantity: 1,
-        maxStock, // ✅ Store max allowed quantity
+        maxStock,
       }];
     });
   };

@@ -1,12 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +30,11 @@ export const WishlistProvider = ({ children }) => {
   };
 
   const toggleWishlist = async (productId) => {
-    if (!user) return toast.error('Please login to save items');
+    if (!user) {
+      toast.error('Please create an account to save items.');
+      navigate('/register');
+      return;
+    }
     try {
       const { data } = await api.post('/wishlist/toggle', { productId });
       if (data.isWishlisted) {
