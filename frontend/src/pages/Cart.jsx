@@ -15,7 +15,7 @@ export default function Cart() {
   const navigate = useNavigate();
 
   if (cart.length === 0) return (
-    <div className="container page" style={{ textAlign: 'center', paddingTop: 80 }}>
+    <div className="container page" style={{ textAlign: 'center' }}>
       <p style={{ fontSize: 56 }}>🛒</p>
       <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, margin: '16px 0 8px' }}>Your cart is empty</h2>
       <p style={{ color: 'var(--text2)', marginBottom: 24 }}>Looks like you haven't added anything yet</p>
