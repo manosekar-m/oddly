@@ -3,6 +3,7 @@ import axios from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
 import { FiSearch, FiChevronDown } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -66,33 +67,65 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="hero-section">
-        <div className="container hero-content">
-          <p className="hero-subtitle animate-slide-up">Premium Quality</p>
-          <h1 className="hero-title animate-slide-up delay-1">
-            Wear Your<br />
-            <span className="hero-title-accent">
-              Story.
-              <span className="hero-title-glow">Story.</span>
-            </span>
-          </h1>
-          <p className="hero-description animate-slide-up delay-2">
-            Discover our exclusive collection of handpicked apparel crafted from the finest, ultra-soft fabrics. Designed for those who appreciate true elegance in every thread.
-          </p>
-          <div className="animate-slide-up delay-3">
+        <motion.div 
+          className="container hero-content"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ staggerChildren: 0.15 }}
+        >
+          <div style={{ overflow: 'hidden' }}>
+            <motion.p 
+              className="hero-subtitle"
+              variants={{ hidden: { y: '100%' }, visible: { y: 0, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
+            >Premium Quality</motion.p>
+          </div>
+          
+          <div style={{ overflow: 'hidden', paddingBottom: 10 }}>
+            <motion.h1 
+              className="hero-title"
+              variants={{ hidden: { y: '100%' }, visible: { y: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } } }}
+            >
+              Wear Your<br />
+              <span className="hero-title-accent">
+                Story.
+                <span className="hero-title-glow">Story.</span>
+              </span>
+            </motion.h1>
+          </div>
+
+          <div style={{ overflow: 'hidden' }}>
+            <motion.p 
+              className="hero-description"
+              variants={{ hidden: { y: '100%', opacity: 0 }, visible: { y: 0, opacity: 0.9, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
+            >
+              Discover our exclusive collection of handpicked apparel crafted from the finest, ultra-soft fabrics. Designed for those who appreciate true elegance in every thread.
+            </motion.p>
+          </div>
+          
+          <motion.div 
+            variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
+          >
             <button 
               className="btn-primary hero-btn" 
               onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}
             >
               Explore Collection
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       <div className="container page">
         {/* New Arrivals Section */}
         {newArrivals.length > 0 && (
-          <section className="section-block fade-in">
+          <motion.section 
+            className="section-block"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <div className="section-header">
               <h2 className="page-title" style={{ marginBottom: 0 }}>New Arrivals</h2>
               <span className="badge badge-gold pulse-badge">Fresh Drop</span>
@@ -108,11 +141,18 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </section>
+          </motion.section>
         )}
 
         {/* All Products Section */}
-        <section id="shop" className="section-block fade-in delay-1">
+        <motion.section 
+          id="shop" 
+          className="section-block"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           <div className="shop-header">
             <h2 className="page-title" style={{ marginBottom: 0 }}>All Products</h2>
             
@@ -203,7 +243,7 @@ export default function Home() {
               ))}
             </div>
           )}
-        </section>
+        </motion.section>
       </div>
 
       <style>{`

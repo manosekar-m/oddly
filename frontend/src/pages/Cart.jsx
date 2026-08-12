@@ -4,6 +4,7 @@ import { FiTrash2, FiMinus, FiPlus, FiTag, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import api from '../api/axios';
+import { motion } from 'framer-motion';
 
 export default function Cart() {
   const { 
@@ -50,9 +51,18 @@ export default function Cart() {
     <div className="container page">
       <h1 className="page-title" style={{ marginBottom: 32 }}>Your Cart</h1>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32, alignItems: 'start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <motion.div 
+          style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+        >
           {cart.map(item => (
-            <div key={`${item.productId}-${item.size}`} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 14, padding: 20, display: 'flex', gap: 20, alignItems: 'center' }}>
+            <motion.div 
+              key={`${item.productId}-${item.size}`} 
+              style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 14, padding: 20, display: 'flex', gap: 20, alignItems: 'center' }}
+              variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}
+            >
               <img src={item.image || 'https://via.placeholder.com/90x110'} alt={item.name} style={{ width: 90, height: 110, objectFit: 'cover', borderRadius: 10 }} />
               <div style={{ flex: 1 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>{item.name}</h3>
@@ -81,9 +91,9 @@ export default function Cart() {
               <button onClick={() => removeFromCart(item.productId, item.size)} style={{ background: 'none', border: 'none', color: 'var(--danger)', padding: 8 }}>
                 <FiTrash2 size={18} />
               </button>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 14, padding: 24, position: 'sticky', top: 80 }}>
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 20 }}>Order Summary</h3>

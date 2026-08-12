@@ -1,4 +1,7 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import Lenis from '@studio-freight/lenis';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -44,6 +47,25 @@ function AuthGuard({ children }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      smoothTouch: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => lenis.destroy();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -75,23 +97,7 @@ export default function App() {
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                   <Navbar />
                   <main style={{ flex: 1 }}>
-                    <Routes>
-                      {/* Public Store Pages */}
-                      <Route path="/" element={<Home />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/product/:id" element={<ProductDetail />} />
-                      <Route path="/refund-policy" element={<RefundPolicy />} />
-                      <Route path="/contact" element={<Contact />} />
-                      
-                      {/* Protected Store Pages */}
-                      <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
-                      <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
-                      <Route path="/profile" element={<AuthGuard><Profile /></AuthGuard>} />
-                      <Route path="/wishlist" element={<AuthGuard><Wishlist /></AuthGuard>} />
-                      
-                      {/* Catch-all redirect */}
-                      <Route path="*" element={<Navigate to="/" replace />} />
-                    </Routes>
+                    <AnimatedRoutes />
                   </main>
                   <Footer />
                 </div>
@@ -107,4 +113,43 @@ export default function App() {
 // Simple layout wrapper for login/register pages
 function PublicLayout({ children }) {
   return children;
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Public Store Pages */}
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/product/:id" element={<PageTransition><ProductDetail /></PageTransition>} />
+        <Route path="/refund-policy" element={<PageTransition><RefundPolicy /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        
+        {/* Protected Store Pages */}
+        <Route path="/cart" element={<AuthGuard><PageTransition><Cart /></PageTransition></AuthGuard>} />
+        <Route path="/checkout" element={<AuthGuard><PageTransition><Checkout /></PageTransition></AuthGuard>} />
+        <Route path="/profile" element={<AuthGuard><PageTransition><Profile /></PageTransition></AuthGuard>} />
+        <Route path="/wishlist" element={<AuthGuard><PageTransition><Wishlist /></PageTransition></AuthGuard>} />
+        
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
+function PageTransition({ children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    >
+      {children}
+    </motion.div>
+  );
 }
