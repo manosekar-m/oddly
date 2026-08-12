@@ -71,25 +71,25 @@ export default function ProductDetail() {
         </div>
 
         <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+          <div style={{ marginBottom: 28 }}>
             {product.isNewArrival && <span className="badge badge-gold" style={{ marginBottom: 12, display: 'inline-block' }}>New Arrival</span>}
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>{product.name}</h1>
             {product.description && <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 20, lineHeight: 1.7 }}>{product.description}</p>}
-          </motion.div>
+          </div>
 
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28 }}>
             <span style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent)' }}>₹{product.discountedPrice}</span>
             {discount > 0 && <>
               <span style={{ fontSize: 18, color: 'var(--text2)', textDecoration: 'line-through' }}>₹{product.price}</span>
               <span className="badge badge-green">{discount}% OFF</span>
             </>}
-          </motion.div>
+          </div>
 
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} style={{ marginBottom: 28 }}>
+          <div style={{ marginBottom: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <span style={{ fontSize: 14, fontWeight: 600 }}>Select Size</span>
               <button onClick={() => setShowSizeChart(true)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 13, textDecoration: 'underline' }}>Size Chart</button>
@@ -103,14 +103,14 @@ export default function ProductDetail() {
               ))}
             </div>
             {selectedSize && <p style={{ marginTop: 8, fontSize: 12, color: 'var(--text2)' }}>{product.sizes.find(s => s.size === selectedSize)?.quantity} units left in stock</p>}
-          </motion.div>
+          </div>
 
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} style={{ display: 'flex', gap: 12, marginBottom: 32 }}>
+          <div style={{ display: 'flex', gap: 12, marginBottom: 32 }}>
             <button className="btn-primary" onClick={handleAddToCart} style={{ flex: 1, padding: '16px' }}>Add to Cart</button>
             <button className="btn-outline" onClick={() => { handleAddToCart(); if (selectedSize) navigate('/cart'); }} style={{ flex: 1, padding: '16px' }}>Buy Now</button>
-          </motion.div>
+          </div>
 
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} style={{ padding: 24, background: 'var(--bg2)', borderRadius: 16, border: '1px solid var(--border)' }}>
+          <div style={{ padding: 24, background: 'var(--bg2)', borderRadius: 16, border: '1px solid var(--border)' }}>
             <h4 style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>Product Highlights</h4>
             <ul style={{ fontSize: 13, color: 'var(--text2)', paddingLeft: 18, lineHeight: 1.8 }}>
               <li>Premium high-quality fabric for ultimate comfort</li>
@@ -118,7 +118,7 @@ export default function ProductDetail() {
               <li>Exclusive design tailored for the modern look</li>
               <li>Sustainable and ethically sourced materials</li>
             </ul>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 

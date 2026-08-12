@@ -69,50 +69,29 @@ export default function Home() {
       <div className="hero-section">
         <motion.div 
           className="container hero-content"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ staggerChildren: 0.15 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div style={{ overflow: 'hidden' }}>
-            <motion.p 
-              className="hero-subtitle"
-              variants={{ hidden: { y: '100%' }, visible: { y: 0, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
-            >Premium Quality</motion.p>
-          </div>
-          
-          <div style={{ overflow: 'hidden', paddingBottom: 10 }}>
-            <motion.h1 
-              className="hero-title"
-              variants={{ hidden: { y: '100%' }, visible: { y: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } } }}
-            >
-              Wear Your<br />
-              <span className="hero-title-accent">
-                Story.
-                <span className="hero-title-glow">Story.</span>
-              </span>
-            </motion.h1>
-          </div>
-
-          <div style={{ overflow: 'hidden' }}>
-            <motion.p 
-              className="hero-description"
-              variants={{ hidden: { y: '100%', opacity: 0 }, visible: { y: 0, opacity: 0.9, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
-            >
-              Discover our exclusive collection of handpicked apparel crafted from the finest, ultra-soft fabrics. Designed for those who appreciate true elegance in every thread.
-            </motion.p>
-          </div>
-          
-          <motion.div 
-            variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } } }}
-          >
+          <p className="hero-subtitle">Premium Quality</p>
+          <h1 className="hero-title">
+            Wear Your<br />
+            <span className="hero-title-accent">
+              Story.
+              <span className="hero-title-glow">Story.</span>
+            </span>
+          </h1>
+          <p className="hero-description">
+            Discover our exclusive collection of handpicked apparel crafted from the finest, ultra-soft fabrics. Designed for those who appreciate true elegance in every thread.
+          </p>
+          <div>
             <button 
               className="btn-primary hero-btn" 
               onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}
             >
               Explore Collection
             </button>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 

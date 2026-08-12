@@ -53,15 +53,14 @@ export default function Cart() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32, alignItems: 'start' }}>
         <motion.div 
           style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
           {cart.map(item => (
-            <motion.div 
+            <div 
               key={`${item.productId}-${item.size}`} 
               style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 14, padding: 20, display: 'flex', gap: 20, alignItems: 'center' }}
-              variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}
             >
               <img src={item.image || 'https://via.placeholder.com/90x110'} alt={item.name} style={{ width: 90, height: 110, objectFit: 'cover', borderRadius: 10 }} />
               <div style={{ flex: 1 }}>
@@ -91,7 +90,7 @@ export default function Cart() {
               <button onClick={() => removeFromCart(item.productId, item.size)} style={{ background: 'none', border: 'none', color: 'var(--danger)', padding: 8 }}>
                 <FiTrash2 size={18} />
               </button>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
 
