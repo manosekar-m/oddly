@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <div>
-      <div style={{ background: 'linear-gradient(135deg, #0e0e0e, #1a1500)', padding: '80px 0', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ background: 'linear-gradient(135deg, #0e0e0e, #1a1500)', padding: '150px 0 80px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 56, marginBottom: 16, color: 'var(--accent)' }}>About ODDLY</h1>
           <p style={{ color: 'var(--text2)', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>Redefining casual wear with premium craftsmanship</p>

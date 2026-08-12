@@ -1,6 +1,6 @@
 export default function RefundPolicy() {
   return (
-    <div className="container" style={{ padding: '60px 0', maxWidth: '800px', margin: '0 auto' }}>
+    <div className="container page" style={{ maxWidth: '800px' }}>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 32, color: 'var(--accent)', marginBottom: 24 }}>Refund Policy</h1>
 
       <div style={{ color: 'var(--text2)', fontSize: 16, lineHeight: 1.8 }}>
