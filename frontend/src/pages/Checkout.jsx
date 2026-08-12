@@ -271,7 +271,7 @@ export default function Checkout() {
                 </div>
                 <div className="form-group">
                   <label className="label">Payment Screenshot <span style={{ color: 'var(--text2)', fontWeight: 400 }}>(Optional)</span></label>
-                  <input type="file" accept="image/*" onChange={handleScreenshotChange} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text2)', cursor: 'pointer', width: 'auto', fontSize: 13 }} />
+                  <input type="file" accept="image/*" onChange={handleScreenshotChange} />
                   {screenshotPreview && (
                     <div style={{ marginTop: 12 }}>
                       <img src={screenshotPreview} alt="Payment screenshot" style={{ maxWidth: 180, maxHeight: 260, borderRadius: 10, border: '2px solid var(--accent)', objectFit: 'cover' }} />

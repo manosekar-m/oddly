@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiInstagram, FiTwitter, FiFacebook } from 'react-icons/fi';
 
 export default function Footer() {
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
   return (
     <footer className="premium-footer">
       <div className="footer-glow"></div>
@@ -37,17 +38,17 @@ export default function Footer() {
           {/* Quick Links */}
           <div className="footer-col">
             <h4 className="footer-col-title">Shop</h4>
-            <Link to="/" className="footer-link">All Products</Link>
-            <Link to="/" className="footer-link">New Arrivals</Link>
-            <Link to="/about" className="footer-link">Our Story</Link>
-            <Link to="/cart" className="footer-link">Cart</Link>
+            <Link to="/" className="footer-link" onClick={scrollTop}>All Products</Link>
+            <Link to="/" className="footer-link" onClick={scrollTop}>New Arrivals</Link>
+            <Link to="/about" className="footer-link" onClick={scrollTop}>Our Story</Link>
+            <Link to="/cart" className="footer-link" onClick={scrollTop}>Cart</Link>
           </div>
 
           {/* Support */}
           <div className="footer-col">
             <h4 className="footer-col-title">Support</h4>
-            <Link to="/contact" className="footer-link">Contact Us</Link>
-            <Link to="/refund-policy" className="footer-link">Refund Policy</Link>
+            <Link to="/contact" className="footer-link" onClick={scrollTop}>Contact Us</Link>
+            <Link to="/refund-policy" className="footer-link" onClick={scrollTop}>Refund Policy</Link>
             <a href="mailto:support@oddly.in" className="footer-link">support@oddly.in</a>
             <a href="tel:+916379833844" className="footer-link">+91 63798 33844</a>
           </div>
@@ -59,8 +60,8 @@ export default function Footer() {
             © {new Date().getFullYear()} ODDLY STUDIO. All rights reserved.
           </div>
           <div className="footer-legal">
-            <Link to="/refund-policy">Terms of Service</Link>
-            <Link to="/refund-policy">Privacy Policy</Link>
+            <Link to="/refund-policy" onClick={scrollTop}>Terms of Service</Link>
+            <Link to="/refund-policy" onClick={scrollTop}>Privacy Policy</Link>
           </div>
         </div>
       </div>

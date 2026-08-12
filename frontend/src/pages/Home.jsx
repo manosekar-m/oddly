@@ -215,7 +215,6 @@ export default function Home() {
           align-items: center;
           justify-content: center;
           text-align: center;
-          overflow: hidden;
         }
 
         .page-video-bg {

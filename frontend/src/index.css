@@ -44,6 +44,18 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 
+input[type="file"] {
+  width: auto;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  display: block;
+}
+
 select option {
   background: var(--surface);
   color: var(--text);
