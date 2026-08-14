@@ -42,7 +42,14 @@ export default function Navbar() {
       {marqueeMessage && (
         <div className="top-marquee-bar">
           <div className="marquee-content-container">
-            {marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; {marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; {marqueeMessage}
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={i} className="marquee-item">{marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; </span>
+            ))}
+          </div>
+          <div className="marquee-content-container" aria-hidden="true">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={`dup-${i}`} className="marquee-item">{marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; </span>
+            ))}
           </div>
         </div>
       )}
@@ -137,11 +144,14 @@ export default function Navbar() {
           font-weight: 800;
           text-transform: uppercase;
           letter-spacing: 2px;
+          white-space: nowrap;
         }
         .marquee-content-container {
-          white-space: nowrap;
-          padding-left: 100%;
-          animation: marquee-slide 20s linear infinite;
+          display: flex;
+          animation: marquee-slide 30s linear infinite;
+        }
+        .marquee-item {
+          display: inline-block;
         }
         .top-marquee-bar:hover .marquee-content-container {
           animation-play-state: paused;
