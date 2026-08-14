@@ -65,7 +65,6 @@ export default function Home() {
       </video>
       <div className="page-video-overlay"></div>
 
-      {/* Hero Section */}
       <div className="hero-section">
         <motion.div 
           className="container hero-content"
@@ -73,23 +72,14 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="hero-subtitle">Premium Quality</p>
-          <h1 className="hero-title">
-            Wear Your<br />
-            <span className="hero-title-accent">
-              Story.
-              <span className="hero-title-glow">Story.</span>
-            </span>
-          </h1>
-          <p className="hero-description">
-            Discover our exclusive collection of handpicked apparel crafted from the finest, ultra-soft fabrics. Designed for those who appreciate true elegance in every thread.
-          </p>
+          <h1 className="hero-title">ODDLY</h1>
+          <p className="hero-description">The New Collection</p>
           <div>
             <button 
               className="btn-primary hero-btn" 
               onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}
             >
-              Explore Collection
+              DISCOVER
             </button>
           </div>
         </motion.div>
@@ -173,22 +163,24 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, marginBottom: 32, overflowX: 'auto', paddingBottom: 8 }}>
+          <div style={{ display: 'flex', gap: 24, marginBottom: 32, overflowX: 'auto', paddingBottom: 8, borderBottom: '1px solid var(--border)' }}>
             {categories.map(cat => (
               <button 
                 key={cat}
                 onClick={() => setCategory(cat)}
                 style={{ 
-                  padding: '8px 20px', 
-                  borderRadius: 30, 
-                  background: category === cat ? 'var(--accent)' : 'rgba(255,255,255,0.03)', 
-                  color: category === cat ? '#000' : 'var(--text2)', 
-                  border: '1px solid',
-                  borderColor: category === cat ? 'var(--accent)' : 'rgba(255,255,255,0.1)',
+                  padding: '8px 0', 
+                  background: 'none', 
+                  color: category === cat ? '#fff' : 'var(--text2)', 
+                  border: 'none',
+                  borderBottom: category === cat ? '2px solid #fff' : '2px solid transparent',
                   fontSize: 13,
                   fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
                   whiteSpace: 'nowrap',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  marginBottom: '-1px'
                 }}
               >
                 {cat}
@@ -268,89 +260,40 @@ export default function Home() {
           align-items: center;
         }
 
-        .hero-subtitle {
-          color: var(--accent);
-          font-size: 14px;
-          font-weight: 700;
-          letter-spacing: 5px;
-          text-transform: uppercase;
-          margin-bottom: 24px;
-          text-shadow: 0 0 10px rgba(232, 201, 126, 0.3);
-        }
-
         .hero-title {
           font-family: var(--font-display);
-          font-size: clamp(48px, 10vw, 100px);
-          font-weight: 700;
-          line-height: 1.05;
-          margin-bottom: 30px;
+          font-size: clamp(60px, 12vw, 150px);
+          font-weight: 800;
+          line-height: 1;
+          margin-bottom: 10px;
           color: #fff;
-          text-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .hero-title-accent {
-          color: var(--accent);
-          position: relative;
-          display: inline-block;
-        }
-
-        .hero-title-glow {
-          position: absolute;
-          top: 0;
-          left: 0;
-          color: var(--accent);
-          filter: blur(20px);
-          opacity: 0.6;
-          animation: pulseGlow 3s infinite alternate;
-          pointer-events: none;
-        }
-
-        @keyframes pulseGlow {
-          0% { filter: blur(15px); opacity: 0.5; transform: scale(0.95); }
-          100% { filter: blur(25px); opacity: 0.9; transform: scale(1.05); }
+          letter-spacing: 2px;
         }
 
         .hero-description {
-          color: #f0ede8;
-          font-size: 18px;
-          max-width: 600px;
-          margin: 0 auto 40px;
-          line-height: 1.7;
-          opacity: 0.9;
-          text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+          color: #fff;
+          font-size: 14px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          margin-bottom: 40px;
         }
 
         .hero-btn {
           padding: 16px 48px;
-          font-size: 16px;
+          font-size: 13px;
           text-transform: uppercase;
           letter-spacing: 1.5px;
-          box-shadow: 0 10px 30px rgba(232, 201, 126, 0.3);
           transition: all 0.3s ease;
-          border-radius: 30px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .hero-btn::after {
-          content: '';
-          position: absolute;
-          top: 0; left: -100%;
-          width: 50%; height: 100%;
-          background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-          transform: skewX(-25deg);
-          animation: shine 5s infinite;
-        }
-
-        @keyframes shine {
-          0% { left: -100%; }
-          20% { left: 200%; }
-          100% { left: 200%; }
+          border-radius: 0;
+          background: #fff;
+          color: #000;
         }
 
         .hero-btn:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 15px 40px rgba(232, 201, 126, 0.5);
+          background: #000;
+          color: #fff;
+          border-color: #fff;
         }
 
         /* Layout & Spacing */

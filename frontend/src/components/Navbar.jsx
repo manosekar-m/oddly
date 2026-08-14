@@ -39,18 +39,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Premium Marquee Top Bar */}
-      {marqueeMessage && (
-        <div className="top-banner">
-          <div className="top-banner-track">
-            <span>{marqueeMessage}</span>
-            <span>{marqueeMessage}</span>
-            <span>{marqueeMessage}</span>
-          </div>
-        </div>
-      )}
-
-      <nav className={`premium-nav ${scrolled ? 'scrolled' : ''}`} style={{ top: marqueeMessage && !scrolled ? '45px' : '16px' }}>
+      <nav className={`premium-nav ${scrolled ? 'scrolled' : ''}`}>
         <div className="nav-wrapper">
           {/* Logo */}
           <Link to="/" className="nav-logo">
@@ -89,8 +78,7 @@ export default function Navbar() {
             )}
             
             <Link to="/cart" className="cart-btn">
-              <FiShoppingCart size={18} />
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              CART ({cartCount.toString().padStart(2, '0')})
             </Link>
             
             <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
@@ -125,57 +113,23 @@ export default function Navbar() {
       </nav>
 
       <style>{`
-        /* Top Banner */
-        .top-banner {
+        /* Floating Premium Nav */
+        .premium-nav {
           position: fixed;
           top: 0;
           left: 0;
           width: 100%;
-          background: #000;
-          color: var(--accent);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 2px;
-          padding: 8px 0;
-          overflow: hidden;
-          z-index: 1001;
-          display: flex;
-          border-bottom: 1px solid rgba(232, 201, 126, 0.15);
-        }
-        .top-banner-track {
-          display: flex;
-          width: max-content;
-          animation: slideMarquee 40s linear infinite;
-        }
-        .top-banner-track span {
-          white-space: nowrap;
-          padding: 0 20px;
-        }
-        @keyframes slideMarquee {
-          100% { transform: translateX(-33.33%); }
-        }
-
-        /* Floating Premium Nav */
-        .premium-nav {
-          position: fixed;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 95%;
-          max-width: 1200px;
           z-index: 1000;
-          background: rgba(22, 22, 22, 0.4);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 100px;
-          padding: 0 24px;
-          transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 0 40px;
+          transition: all 0.3s ease;
         }
         .premium-nav.scrolled {
-          top: 16px;
-          background: rgba(14, 14, 14, 0.85);
-          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 20px rgba(232,201,126,0.05);
-          border-color: rgba(232, 201, 126, 0.15);
+          background: #000;
+          border-bottom: 1px solid #333;
         }
 
         .nav-wrapper {
@@ -211,22 +165,19 @@ export default function Navbar() {
           gap: 8px;
         }
         .nav-link {
-          padding: 8px 20px;
+          padding: 8px 16px;
           font-size: 13px;
           font-weight: 600;
           color: var(--text2);
           text-transform: uppercase;
           letter-spacing: 1px;
-          border-radius: 100px;
-          transition: all 0.3s ease;
+          transition: color 0.3s ease;
         }
         .nav-link:hover {
           color: #fff;
-          background: rgba(255, 255, 255, 0.05);
         }
         .nav-link.active {
-          color: #000;
-          background: var(--accent);
+          color: #fff;
         }
 
         /* Actions */
@@ -266,37 +217,18 @@ export default function Navbar() {
         }
 
         .cart-btn {
-          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: rgba(232, 201, 126, 0.1);
-          color: var(--accent);
-          transition: all 0.3s ease;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          transition: color 0.3s ease;
         }
         .cart-btn:hover {
-          background: var(--accent);
-          color: #000;
-          transform: scale(1.05);
-        }
-        .cart-badge {
-          position: absolute;
-          top: -2px;
-          right: -2px;
-          background: #fff;
-          color: #000;
-          font-size: 11px;
-          font-weight: 800;
-          width: 20px;
-          height: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+          color: var(--text2);
         }
 
         .admin-pill {

@@ -17,6 +17,7 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState('');
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [openAccordion, setOpenAccordion] = useState('details');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -105,20 +106,59 @@ export default function ProductDetail() {
             {selectedSize && <p style={{ marginTop: 8, fontSize: 12, color: 'var(--text2)' }}>{product.sizes.find(s => s.size === selectedSize)?.quantity} units left in stock</p>}
           </div>
 
-          <div style={{ display: 'flex', gap: 12, marginBottom: 32 }}>
+          <div style={{ display: 'flex', gap: 12, marginBottom: 40 }}>
             <button className="btn-primary" onClick={handleAddToCart} style={{ flex: 1, padding: '16px' }}>Add to Cart</button>
             <button className="btn-outline" onClick={() => { handleAddToCart(); if (selectedSize) navigate('/cart'); }} style={{ flex: 1, padding: '16px' }}>Buy Now</button>
           </div>
 
-          <div style={{ padding: 24, background: 'var(--bg2)', borderRadius: 16, border: '1px solid var(--border)' }}>
-            <h4 style={{ fontSize: 14, marginBottom: 12, fontWeight: 600 }}>Product Highlights</h4>
-            <ul style={{ fontSize: 13, color: 'var(--text2)', paddingLeft: 18, lineHeight: 1.8 }}>
-              <li>Premium high-quality fabric for ultimate comfort</li>
-              <li>Durable stitching for long-lasting wear</li>
-              <li>Exclusive design tailored for the modern look</li>
-              <li>Sustainable and ethically sourced materials</li>
-            </ul>
+          <div style={{ borderTop: '1px solid var(--border)' }}>
+            {/* Accordion 1 */}
+            <div style={{ borderBottom: '1px solid var(--border)' }}>
+              <button 
+                onClick={() => setOpenAccordion(openAccordion === 'details' ? '' : 'details')}
+                style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '16px 0', background: 'none', border: 'none', color: 'var(--text)', fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}
+              >
+                Details <span>{openAccordion === 'details' ? '-' : '+'}</span>
+              </button>
+              {openAccordion === 'details' && (
+                <div style={{ paddingBottom: 16, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8 }}>
+                  <p>Premium high-quality fabric for ultimate comfort. Durable stitching for long-lasting wear. Exclusive design tailored for the modern look.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion 2 */}
+            <div style={{ borderBottom: '1px solid var(--border)' }}>
+              <button 
+                onClick={() => setOpenAccordion(openAccordion === 'materials' ? '' : 'materials')}
+                style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '16px 0', background: 'none', border: 'none', color: 'var(--text)', fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}
+              >
+                Materials & Care <span>{openAccordion === 'materials' ? '-' : '+'}</span>
+              </button>
+              {openAccordion === 'materials' && (
+                <div style={{ paddingBottom: 16, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8 }}>
+                  <p>100% Organic Cotton. Machine wash cold with like colors. Do not bleach. Tumble dry low.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion 3 */}
+            <div style={{ borderBottom: '1px solid var(--border)' }}>
+              <button 
+                onClick={() => setOpenAccordion(openAccordion === 'shipping' ? '' : 'shipping')}
+                style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '16px 0', background: 'none', border: 'none', color: 'var(--text)', fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}
+              >
+                Shipping & Returns <span>{openAccordion === 'shipping' ? '-' : '+'}</span>
+              </button>
+              {openAccordion === 'shipping' && (
+                <div style={{ paddingBottom: 16, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8 }}>
+                  <p>Free standard shipping on orders over $100. Returns accepted within 14 days of delivery for unworn items in original condition.</p>
+                </div>
+              )}
+            </div>
           </div>
+
+
         </motion.div>
       </div>
 
@@ -129,7 +169,7 @@ export default function ProductDetail() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
         >
-          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 24, marginBottom: 32 }}>You May Also Like</h3>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 24, marginBottom: 32, textTransform: 'uppercase' }}>Shop the Look</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 30 }}>
             {similarProducts.map(p => (
               <ProductCard key={p._id} product={p} />
@@ -138,13 +178,48 @@ export default function ProductDetail() {
         </motion.div>
       )}
 
+      {/* Sticky Bottom Add to Cart Bar */}
+      <div className="sticky-cart-bar">
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <img src={product.images[0]} alt="" style={{ width: 40, height: 50, objectFit: 'cover' }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{product.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--text2)' }}>₹{product.discountedPrice}</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            {!selectedSize && <span style={{ fontSize: 12, color: 'var(--text2)', display: 'none' }} className="mobile-hide">Select a size above</span>}
+            <button className="btn-primary" onClick={handleAddToCart} style={{ padding: '10px 24px', fontSize: 12 }}>ADD TO CART</button>
+          </div>
+        </div>
+      </div>
+
       <style>{`
         .product-image-container:hover .zoom-image {
           transform: scale(1.5);
           cursor: crosshair;
         }
+        .sticky-cart-bar {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: rgba(0, 0, 0, 0.8);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border-top: 1px solid var(--border);
+          padding: 12px 0;
+          z-index: 100;
+          transform: translateY(100%);
+          animation: slideUpBar 0.5s 1s forwards ease-out;
+        }
+        @keyframes slideUpBar {
+          to { transform: translateY(0); }
+        }
         @media (max-width: 768px) {
           .product-image-container:hover .zoom-image { transform: none; }
+          .mobile-hide { display: none !important; }
         }
       `}</style>
     </div>
