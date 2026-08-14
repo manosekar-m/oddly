@@ -5,6 +5,10 @@ const { placeOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, 
 const { protect, adminOnly } = require('../middleware/auth');
 
 const { uploadCloud } = require('../config/cloudinary');
+const { createOrder, verifyPayment } = require('../controllers/paymentController');
+
+router.post('/razorpay/order', protect, createOrder);
+router.post('/razorpay/verify', protect, verifyPayment);
 
 router.post('/', protect, uploadCloud.single('paymentScreenshot'), placeOrder);
 router.get('/my', protect, getMyOrders);

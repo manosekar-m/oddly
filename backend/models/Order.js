@@ -23,6 +23,8 @@ const orderSchema = new mongoose.Schema({
   paymentId: { type: String, default: '' },
   transactionId: { type: String, default: '' },
   paymentScreenshot: { type: String, default: '' },
+  razorpayOrderId: { type: String, default: '' },
+  razorpayPaymentId: { type: String, default: '' },
   paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
   orderStatus: { type: String, enum: ['placed', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'placed' },
   coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },

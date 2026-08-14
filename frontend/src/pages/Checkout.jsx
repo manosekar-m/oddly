@@ -25,6 +25,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [paymentMode, setPaymentMode] = useState('razorpay');
   const [transactionId, setTransactionId] = useState('');
   const [screenshot, setScreenshot] = useState(null);
   const [screenshotPreview, setScreenshotPreview] = useState('');
@@ -89,11 +90,114 @@ export default function Checkout() {
     if (file) { setScreenshot(file); setScreenshotPreview(URL.createObjectURL(file)); }
   };
 
-  const handlePlaceOrder = async () => {
-    if (!transactionId.trim()) { toast.error('Please enter your UPI Transaction ID'); return; }
-    if (transactionId.trim().length < 4) { toast.error('Please enter a valid Transaction ID'); return; }
+  const handleUPIPayment = async () => {
+    if (!transactionId.trim() && !screenshot) { toast.error('Please enter Transaction ID or upload a screenshot'); return; }
 
     setLoading(true);
+    try {
+      const orderItems = cart.map(i => ({
+        product: i.productId,
+        name: i.name,
+        image: i.image || '',
+        size: i.size,
+        quantity: i.quantity,
+        price: i.price,
+      }));
+
+      const shippingAddress = { street: form.street, city: form.city, district: form.district, state: form.state, pincode: form.pincode };
+
+      if (screenshot) {
+        const fd = new FormData();
+        fd.append('items', JSON.stringify(orderItems));
+        fd.append('shippingAddress', JSON.stringify(shippingAddress));
+        fd.append('mobile', form.mobile);
+        fd.append('paymentMethod', 'UPI');
+        fd.append('transactionId', transactionId.trim());
+        fd.append('paymentScreenshot', screenshot);
+        fd.append('totalAmount', finalTotal);
+        if (coupon && coupon._id) fd.append('couponId', coupon._id);
+        await axios.post('/orders', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } else {
+        await axios.post('/orders', {
+          items: orderItems,
+          shippingAddress,
+          mobile: form.mobile,
+          paymentMethod: 'UPI',
+          transactionId: transactionId.trim(),
+          totalAmount: finalTotal,
+          couponId: (coupon && coupon._id) ? coupon._id : undefined
+        });
+      }
+
+      clearCart();
+      toast.success('Order placed successfully! 🎉');
+      navigate('/profile');
+    } catch (err) {
+      console.error('Order error:', err.response?.data);
+      toast.error(err.response?.data?.message || 'Order failed. Please try again.');
+    } finally { setLoading(false); }
+  };
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRazorpayPayment = async () => {
+    setLoading(true);
+    try {
+      const res = await loadRazorpay();
+      if (!res) {
+        toast.error('Razorpay SDK failed to load. Are you online?');
+        setLoading(false);
+        return;
+      }
+
+      const { data } = await axios.post('/orders/razorpay/order', { amount: finalTotal });
+      
+      const options = {
+        key: data.key_id,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: 'ODDLY Store',
+        description: 'Payment for your order',
+        order_id: data.order.id,
+        handler: async function (response) {
+          try {
+            await axios.post('/orders/razorpay/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            });
+            await placeFinalOrder(response.razorpay_order_id, response.razorpay_payment_id);
+          } catch (err) {
+            toast.error('Payment verification failed.');
+          }
+        },
+        prefill: {
+          name: user?.name || '',
+          email: user?.email || '',
+          contact: form.mobile || ''
+        },
+        theme: {
+          color: '#e8c97e' // var(--accent)
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (err) {
+      toast.error('Could not initiate payment. Please try again.');
+    }
+    setLoading(false);
+  };
+
+  const placeFinalOrder = async (razorpayOrderId = '', razorpayPaymentId = '') => {
     try {
       // ✅ Build items with correct 'product' field (not 'productId')
       const orderItems = cart.map(i => ({
@@ -107,30 +211,16 @@ export default function Checkout() {
 
       const shippingAddress = { street: form.street, city: form.city, district: form.district, state: form.state, pincode: form.pincode };
 
-      if (screenshot) {
-        // ✅ FormData path — stringify arrays/objects
-        const fd = new FormData();
-        fd.append('items', JSON.stringify(orderItems));
-        fd.append('shippingAddress', JSON.stringify(shippingAddress));
-        fd.append('mobile', form.mobile);
-        fd.append('paymentMethod', 'UPI');
-        fd.append('transactionId', transactionId.trim());
-        fd.append('paymentScreenshot', screenshot);
-        fd.append('totalAmount', finalTotal);
-        if (coupon && coupon._id) fd.append('couponId', coupon._id);
-        await axios.post('/orders', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      } else {
-        // ✅ JSON path — no screenshot
-        await axios.post('/orders', {
-          items: orderItems,
-          shippingAddress,
-          mobile: form.mobile,
-          paymentMethod: 'UPI',
-          transactionId: transactionId.trim(),
-          totalAmount: finalTotal,
-          couponId: (coupon && coupon._id) ? coupon._id : undefined
-        });
-      }
+      await axios.post('/orders', {
+        items: orderItems,
+        shippingAddress,
+        mobile: form.mobile,
+        paymentMethod: 'Razorpay',
+        razorpayOrderId,
+        razorpayPaymentId,
+        totalAmount: finalTotal,
+        couponId: (coupon && coupon._id) ? coupon._id : undefined
+      });
 
       clearCart();
       toast.success('Order placed successfully! 🎉');
@@ -209,81 +299,96 @@ export default function Checkout() {
           {step === 2 && (
             <div>
               <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 14, padding: 28, marginBottom: 20 }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 20 }}>Pay via UPI</h3>
-                <div style={{ background: 'linear-gradient(135deg, #1a1500, #2a2000)', border: '1px solid var(--accent)', borderRadius: 14, padding: 24, marginBottom: 24, textAlign: 'center' }}>
-                  <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Send payment to</p>
-                  <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)', marginBottom: 4 }}>{YOUR_UPI_ID}</p>
-                  <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 16 }}>{YOUR_UPI_NAME}</p>
-                  <div style={{ background: 'rgba(232,201,126,0.1)', borderRadius: 10, padding: '12px 20px', display: 'inline-block' }}>
-                    <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 2 }}>Amount to Pay</p>
-                    <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{finalTotal}</p>
-                    {coupon && <p style={{ fontSize: 11, color: '#6ecf6e', marginTop: 4 }}>₹{discountAmount} discount applied</p>}
-                  </div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 20 }}>Payment</h3>
+                
+                <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
+                  <button type="button" onClick={() => setPaymentMode('razorpay')} style={{ flex: 1, padding: '12px', borderRadius: 8, background: paymentMode === 'razorpay' ? 'var(--accent)' : 'transparent', color: paymentMode === 'razorpay' ? '#000' : 'var(--text)', border: `1px solid ${paymentMode === 'razorpay' ? 'var(--accent)' : 'var(--border)'}`, fontWeight: 600, cursor: 'pointer' }}>
+                    Pay Online
+                  </button>
+                  <button type="button" onClick={() => setPaymentMode('upi')} style={{ flex: 1, padding: '12px', borderRadius: 8, background: paymentMode === 'upi' ? 'var(--accent)' : 'transparent', color: paymentMode === 'upi' ? '#000' : 'var(--text)', border: `1px solid ${paymentMode === 'upi' ? 'var(--accent)' : 'var(--border)'}`, fontWeight: 600, cursor: 'pointer' }}>
+                    Manual UPI
+                  </button>
                 </div>
-                <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 24, flexWrap: 'wrap' }}>
-                  {[
-                    { name: 'Google Pay', short: 'G Pay', bg: 'linear-gradient(135deg, #4285F4, #34A853)', text: '#fff' },
-                    { name: 'PhonePe', short: 'Ph Pe', bg: 'linear-gradient(135deg, #5f259f, #7b3fbf)', text: '#fff' },
-                    { name: 'Paytm', short: 'Paytm', bg: 'linear-gradient(135deg, #002970, #00b9f5)', text: '#fff' },
-                    { name: 'BHIM UPI', short: 'BHIM', bg: 'linear-gradient(135deg, #00529B, #FF6B00)', text: '#fff' },
-                  ].map(app => (
-                    <div key={app.name} style={{
-                      background: '#fff',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      borderRadius: 12,
-                      padding: '8px 14px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 5,
-                      minWidth: 72
-                    }}>
-                      <div style={{
-                        background: app.bg,
-                        borderRadius: 10,
-                        width: 40,
-                        height: 40,
+
+                {paymentMode === 'razorpay' ? (
+                  <>
+                    <div style={{ background: 'linear-gradient(135deg, #1a1500, #2a2000)', border: '1px solid var(--accent)', borderRadius: 14, padding: 24, marginBottom: 24, textAlign: 'center' }}>
+                      <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 16 }}>Secure Payment via Razorpay</p>
+                      <div style={{ background: 'rgba(232,201,126,0.1)', borderRadius: 10, padding: '12px 20px', display: 'inline-block' }}>
+                        <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 2 }}>Amount to Pay</p>
+                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{finalTotal}</p>
+                        {coupon && <p style={{ fontSize: 11, color: '#6ecf6e', marginTop: 4 }}>₹{discountAmount} discount applied</p>}
+                      </div>
+                    </div>
+
+                    <div style={{ background: 'var(--surface)', borderRadius: 10, padding: 16, marginBottom: 20, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8, border: '1px solid var(--border)', textAlign: 'center' }}>
+                      You will be redirected to Razorpay's secure checkout page to complete your payment. All major credit cards, UPI, and net banking options are supported.
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ background: 'linear-gradient(135deg, #1a1500, #2a2000)', border: '1px solid var(--accent)', borderRadius: 14, padding: 24, marginBottom: 24, textAlign: 'center' }}>
+                      <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Send payment to</p>
+                      <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)', marginBottom: 4 }}>{YOUR_UPI_ID}</p>
+                      <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 16 }}>{YOUR_UPI_NAME}</p>
+                      <div style={{ background: 'rgba(232,201,126,0.1)', borderRadius: 10, padding: '12px 20px', display: 'inline-block' }}>
+                        <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 2 }}>Amount to Pay</p>
+                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{finalTotal}</p>
+                        {coupon && <p style={{ fontSize: 11, color: '#6ecf6e', marginTop: 4 }}>₹{discountAmount} discount applied</p>}
+                      </div>
+                    </div>
+                    <div style={{ background: 'var(--surface)', borderRadius: 10, padding: 16, marginBottom: 20, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8, border: '1px solid var(--border)' }}>
+                      <strong style={{ color: 'var(--text)' }}>How to pay:</strong><br />
+                      1. Open any UPI app (GPay, PhonePe, Paytm)<br />
+                      2. Send <strong style={{ color: 'var(--accent)' }}>₹{finalTotal}</strong> to <strong style={{ color: 'var(--accent)' }}>{YOUR_UPI_ID}</strong><br />
+                      3. Provide the <strong style={{ color: 'var(--text)' }}>Transaction ID</strong> OR <strong style={{ color: 'var(--text)' }}>Payment Screenshot</strong> below.
+                    </div>
+                    <div className="form-group">
+                      <label className="label">UPI Transaction ID</label>
+                      <input value={transactionId} onChange={e => setTransactionId(e.target.value)} placeholder="e.g. 407311558279" style={{ borderColor: transactionId.trim().length >= 4 ? '#5cb85c' : 'var(--border)' }} />
+                      <p style={{ fontSize: 11, color: 'var(--text2)', marginTop: 6 }}>Find in UPI app → History → tap this payment → copy Transaction ID</p>
+                    </div>
+                    <div className="form-group">
+                      <label className="label">Payment Screenshot</label>
+                      <label style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: app.text,
-                        fontSize: 10,
-                        fontWeight: 800,
-                        letterSpacing: 0.3
+                        padding: '14px',
+                        border: '1.5px dashed var(--accent)',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        background: 'rgba(232,201,126,0.05)',
+                        color: 'var(--accent)',
+                        fontWeight: '600',
+                        fontSize: '14px',
+                        transition: 'all 0.2s',
+                        textAlign: 'center'
                       }}>
-                        {app.short}
-                      </div>
-                      <span style={{ fontSize: 10, color: '#444', fontWeight: 700, whiteSpace: 'nowrap' }}>{app.name}</span>
+                        <input type="file" accept="image/*" onChange={handleScreenshotChange} style={{ display: 'none' }} />
+                        {screenshot ? screenshot.name : '+ Upload Screenshot (Optional)'}
+                      </label>
+                      {screenshotPreview && (
+                        <div style={{ marginTop: 12 }}>
+                          <img src={screenshotPreview} alt="Payment screenshot" style={{ maxWidth: 180, maxHeight: 260, borderRadius: 10, border: '2px solid var(--accent)', objectFit: 'cover' }} />
+                          <p style={{ fontSize: 11, color: '#5cb85c', marginTop: 6 }}>✓ Screenshot attached</p>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-                <div style={{ background: 'var(--surface)', borderRadius: 10, padding: 16, marginBottom: 20, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8, border: '1px solid var(--border)' }}>
-                  <strong style={{ color: 'var(--text)' }}>How to pay:</strong><br />
-                  1. Open any UPI app (GPay, PhonePe, Paytm)<br />
-                  2. Send <strong style={{ color: 'var(--accent)' }}>₹{finalTotal}</strong> to <strong style={{ color: 'var(--accent)' }}>{YOUR_UPI_ID}</strong><br />
-                  3. Copy the <strong style={{ color: 'var(--text)' }}>Transaction ID</strong> after payment<br />
-                  4. Paste it below and place your order
-                </div>
-                <div className="form-group">
-                  <label className="label">UPI Transaction ID <span style={{ color: 'var(--danger)' }}>* Required</span></label>
-                  <input value={transactionId} onChange={e => setTransactionId(e.target.value)} placeholder="e.g. 407311558279" style={{ borderColor: transactionId.trim().length >= 4 ? '#5cb85c' : 'var(--border)' }} />
-                  <p style={{ fontSize: 11, color: 'var(--text2)', marginTop: 6 }}>Find in UPI app → History → tap this payment → copy Transaction ID</p>
-                </div>
-                <div className="form-group">
-                  <label className="label">Payment Screenshot <span style={{ color: 'var(--text2)', fontWeight: 400 }}>(Optional)</span></label>
-                  <input type="file" accept="image/*" onChange={handleScreenshotChange} />
-                  {screenshotPreview && (
-                    <div style={{ marginTop: 12 }}>
-                      <img src={screenshotPreview} alt="Payment screenshot" style={{ maxWidth: 180, maxHeight: 260, borderRadius: 10, border: '2px solid var(--accent)', objectFit: 'cover' }} />
-                      <p style={{ fontSize: 11, color: '#5cb85c', marginTop: 6 }}>✓ Screenshot attached</p>
-                    </div>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
-              <button className="btn-primary" onClick={handlePlaceOrder} disabled={loading || !transactionId.trim()} style={{ width: '100%', padding: 18, fontSize: 16, opacity: !transactionId.trim() ? 0.5 : 1 }}>
-                {loading ? 'Placing Order...' : !transactionId.trim() ? 'Enter Transaction ID First' : '✓ Place Order'}
-              </button>
-              {!transactionId.trim() && <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--danger)', marginTop: 8 }}>⚠ Transaction ID is required to confirm your payment</p>}
+
+              {paymentMode === 'razorpay' ? (
+                <button className="btn-primary" onClick={handleRazorpayPayment} disabled={loading} style={{ width: '100%', padding: 18, fontSize: 16 }}>
+                  {loading ? 'Initializing Payment...' : 'Proceed to Pay 🔒'}
+                </button>
+              ) : (
+                <button className="btn-primary" onClick={handleUPIPayment} disabled={loading || (!transactionId.trim() && !screenshot)} style={{ width: '100%', padding: 18, fontSize: 16, opacity: (!transactionId.trim() && !screenshot) ? 0.5 : 1 }}>
+                  {loading ? 'Placing Order...' : (!transactionId.trim() && !screenshot) ? 'Enter ID or attach Screenshot' : '✓ Place Order'}
+                </button>
+              )}
+              
               <button onClick={() => setStep(1)} style={{ width: '100%', marginTop: 10, background: 'none', border: 'none', color: 'var(--text2)', fontSize: 13 }}>← Back to Address</button>
             </div>
           )}

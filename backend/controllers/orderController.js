@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.placeOrder = async (req, res) => {
   try {
-    let { items, shippingAddress, mobile, paymentMethod, transactionId, totalAmount, couponId } = req.body;
+    let { items, shippingAddress, mobile, paymentMethod, transactionId, totalAmount, couponId, razorpayOrderId, razorpayPaymentId } = req.body;
     // Sanitize couponId — FormData may send the string "undefined"
     if (!couponId || couponId === 'undefined' || couponId === 'null') couponId = null;
 
@@ -22,8 +22,13 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: 'No items in order' });
     }
 
-    if (!transactionId || transactionId.trim() === '') {
-      return res.status(400).json({ message: 'Transaction ID is required to place order' });
+    if (paymentMethod !== 'Razorpay') {
+      const hasTransactionId = transactionId && transactionId.trim() !== '';
+      const hasScreenshot = !!req.file;
+      
+      if (!hasTransactionId && !hasScreenshot) {
+        return res.status(400).json({ message: 'Please provide either a Transaction ID or a Payment Screenshot for UPI orders.' });
+      }
     }
 
     // Validate stock and deduct
@@ -54,9 +59,11 @@ exports.placeOrder = async (req, res) => {
       mobile,
       paymentMethod: paymentMethod || 'UPI',
       paymentId,
-      transactionId: transactionId.trim(),
+      transactionId: transactionId ? transactionId.trim() : '',
       paymentScreenshot,
-      paymentStatus: 'pending',
+      razorpayOrderId: razorpayOrderId || '',
+      razorpayPaymentId: razorpayPaymentId || '',
+      paymentStatus: paymentMethod === 'Razorpay' ? 'paid' : 'pending',
       orderStatus: 'placed',
       coupon: couponId || undefined
     });
