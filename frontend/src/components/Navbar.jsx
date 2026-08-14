@@ -39,7 +39,14 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`premium-nav ${scrolled ? 'scrolled' : ''}`}>
+      {marqueeMessage && (
+        <div className="top-marquee-bar">
+          <div className="marquee-content-container">
+            {marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; {marqueeMessage} &nbsp;&nbsp; • &nbsp;&nbsp; {marqueeMessage}
+          </div>
+        </div>
+      )}
+      <nav className={`premium-nav ${scrolled ? 'scrolled' : ''}`} style={{ top: marqueeMessage ? '30px' : '0' }}>
         <div className="nav-wrapper">
           {/* Logo */}
           <Link to="/" className="nav-logo">
@@ -114,6 +121,36 @@ export default function Navbar() {
 
       <style>{`
         /* Floating Premium Nav */
+        .top-marquee-bar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 30px;
+          background: var(--accent);
+          color: #000;
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+          z-index: 1002;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+        }
+        .marquee-content-container {
+          white-space: nowrap;
+          padding-left: 100%;
+          animation: marquee-slide 20s linear infinite;
+        }
+        .top-marquee-bar:hover .marquee-content-container {
+          animation-play-state: paused;
+        }
+        @keyframes marquee-slide {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
+        }
+
         .premium-nav {
           position: fixed;
           top: 0;

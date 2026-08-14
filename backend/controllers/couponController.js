@@ -53,6 +53,7 @@ exports.validateCoupon = async (req, res) => {
       message: 'Coupon applied!', 
       discount, 
       code: coupon.code,
+      _id: coupon._id,
       discountType: coupon.discountType,
       discountAmount: coupon.discountAmount
     });
