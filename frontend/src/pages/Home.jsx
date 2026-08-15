@@ -598,6 +598,11 @@ export default function Home() {
         @keyframes badgePulse {
           to { box-shadow: 0 0 0 10px rgba(232, 201, 126, 0); }
         }
+
+        @media (max-width: 768px) {
+          .search-wrapper { min-width: 100%; }
+          .custom-select-wrapper { min-width: 100%; }
+        }
       `}</style>
     </div>
   );
