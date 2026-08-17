@@ -61,7 +61,7 @@ export default function AdminLogin() {
             <label className="label">Admin Email</label>
             <input 
               type="email" 
-              placeholder="admin@oddly.com"
+              placeholder="Enter admin email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
