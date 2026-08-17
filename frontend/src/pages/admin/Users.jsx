@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { FiTrash2, FiSearch, FiMail, FiPhone, FiCalendar } from 'react-icons/fi';
+import { FiTrash2, FiSearch, FiMail, FiPhone, FiCalendar, FiDownload } from 'react-icons/fi';
+import * as XLSX from 'xlsx';
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [filterMonth, setFilterMonth] = useState('all');
+  const [filterYear, setFilterYear] = useState('all');
 
   useEffect(() => {
     fetchUsers();
@@ -34,17 +37,47 @@ export default function Users() {
     }
   };
 
-  const filteredUsers = users.filter(u => 
-    u.name.toLowerCase().includes(search.toLowerCase()) ||
-    u.email?.toLowerCase().includes(search.toLowerCase()) ||
-    u.mobile?.includes(search)
-  );
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
+                          u.email?.toLowerCase().includes(search.toLowerCase()) ||
+                          u.mobile?.includes(search);
+    
+    let matchesDate = true;
+    if (filterMonth !== 'all' || filterYear !== 'all') {
+      const date = new Date(u.createdAt);
+      if (filterMonth !== 'all' && date.getMonth().toString() !== filterMonth) matchesDate = false;
+      if (filterYear !== 'all' && date.getFullYear().toString() !== filterYear) matchesDate = false;
+    }
+    
+    return matchesSearch && matchesDate;
+  });
+
+  const exportToExcel = () => {
+    if (filteredUsers.length === 0) return toast.error('No users to export');
+    
+    const data = filteredUsers.map(u => ({
+      'Name': u.name,
+      'Email': u.email || 'N/A',
+      'Phone No': u.mobile || 'N/A',
+      'Date of Joined': new Date(u.createdAt).toLocaleDateString()
+    }));
+    
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+    XLSX.writeFile(wb, `Users_Report_${filterMonth}_${filterYear}.xlsx`);
+  };
 
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>Users</h2>
-        <p style={{ color: 'var(--text2)', fontSize: 14 }}>Manage customer accounts and access</p>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>Users</h2>
+          <p style={{ color: 'var(--text2)', fontSize: 14 }}>Manage customer accounts and access</p>
+        </div>
+        <button onClick={exportToExcel} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 8, height: 42, padding: '0 20px', fontSize: 13 }}>
+          <FiDownload size={16} /> Export to Excel
+        </button>
       </div>
 
       <div style={{ 
@@ -53,8 +86,8 @@ export default function Users() {
         border: '1px solid var(--border)',
         overflow: 'hidden'
       }}>
-        <div style={{ padding: 20, borderBottom: '1px solid var(--border)', display: 'flex', gap: 12 }}>
-          <div style={{ position: 'relative', flex: 1 }}>
+        <div style={{ padding: 20, borderBottom: '1px solid var(--border)', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: 250 }}>
             <FiSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text2)' }} />
             <input 
               type="text" 
@@ -64,6 +97,19 @@ export default function Users() {
               style={{ paddingLeft: 40, background: 'var(--bg3)', border: 'none' }}
             />
           </div>
+          <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} style={{ width: 140, background: 'var(--bg3)', border: 'none' }}>
+            <option value="all">All Months</option>
+            {Array.from({length: 12}).map((_, i) => (
+              <option key={i} value={i.toString()}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>
+            ))}
+          </select>
+          <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} style={{ width: 120, background: 'var(--bg3)', border: 'none' }}>
+            <option value="all">All Years</option>
+            {Array.from({length: 5}).map((_, i) => {
+              const year = new Date().getFullYear() - i;
+              return <option key={year} value={year.toString()}>{year}</option>;
+            })}
+          </select>
         </div>
 
         <div style={{ overflowX: 'auto' }}>

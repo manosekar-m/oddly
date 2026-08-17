@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { FiEye, FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiClock } from 'react-icons/fi';
+import { FiEye, FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiClock, FiDownload } from 'react-icons/fi';
+import * as XLSX from 'xlsx';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [filterMonth, setFilterMonth] = useState('all');
+  const [filterYear, setFilterYear] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [expandedImage, setExpandedImage] = useState(null);
 
@@ -61,17 +64,48 @@ export default function Orders() {
     }
   };
 
-  const filteredOrders = orders.filter(o => 
-    o._id.toLowerCase().includes(search.toLowerCase()) ||
-    o.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    o.mobile?.includes(search)
-  );
+  const filteredOrders = orders.filter(o => {
+    const matchesSearch = o._id.toLowerCase().includes(search.toLowerCase()) ||
+                          o.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+                          o.mobile?.includes(search);
+    
+    let matchesDate = true;
+    if (filterMonth !== 'all' || filterYear !== 'all') {
+      const date = new Date(o.createdAt);
+      if (filterMonth !== 'all' && date.getMonth().toString() !== filterMonth) matchesDate = false;
+      if (filterYear !== 'all' && date.getFullYear().toString() !== filterYear) matchesDate = false;
+    }
+    
+    return matchesSearch && matchesDate;
+  });
+
+  const exportToExcel = () => {
+    if (filteredOrders.length === 0) return toast.error('No orders to export');
+    
+    const data = filteredOrders.map(o => ({
+      'Order ID': o._id,
+      'Name of Customer': o.user?.name || 'N/A',
+      'Amount': o.totalAmount,
+      'Payment': o.paymentMethod,
+      'Status': o.orderStatus
+    }));
+    
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Orders");
+    XLSX.writeFile(wb, `Orders_Report_${filterMonth}_${filterYear}.xlsx`);
+  };
 
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>Orders</h2>
-        <p style={{ color: 'var(--text2)', fontSize: 14 }}>Track and manage customer orders</p>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, marginBottom: 8 }}>Orders</h2>
+          <p style={{ color: 'var(--text2)', fontSize: 14 }}>Track and manage customer orders</p>
+        </div>
+        <button onClick={exportToExcel} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 8, height: 42, padding: '0 20px', fontSize: 13 }}>
+          <FiDownload size={16} /> Export to Excel
+        </button>
       </div>
 
       <div style={{ 
@@ -80,8 +114,8 @@ export default function Orders() {
         border: '1px solid var(--border)',
         overflow: 'hidden'
       }}>
-        <div style={{ padding: 20, borderBottom: '1px solid var(--border)', display: 'flex', gap: 12 }}>
-          <div style={{ position: 'relative', flex: 1 }}>
+        <div style={{ padding: 20, borderBottom: '1px solid var(--border)', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: 250 }}>
             <FiSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text2)' }} />
             <input 
               type="text" 
@@ -91,6 +125,19 @@ export default function Orders() {
               style={{ paddingLeft: 40, background: 'var(--bg3)', border: 'none' }}
             />
           </div>
+          <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} style={{ width: 140, background: 'var(--bg3)', border: 'none' }}>
+            <option value="all">All Months</option>
+            {Array.from({length: 12}).map((_, i) => (
+              <option key={i} value={i.toString()}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>
+            ))}
+          </select>
+          <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} style={{ width: 120, background: 'var(--bg3)', border: 'none' }}>
+            <option value="all">All Years</option>
+            {Array.from({length: 5}).map((_, i) => {
+              const year = new Date().getFullYear() - i;
+              return <option key={year} value={year.toString()}>{year}</option>;
+            })}
+          </select>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
