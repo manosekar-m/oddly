@@ -45,18 +45,9 @@ function AuthGuard({ children }) {
   return children;
 }
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  return null;
-}
-
 export default function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
       <AuthProvider>
         <WishlistProvider>
           <CartProvider>
@@ -108,7 +99,7 @@ function AnimatedRoutes() {
   const location = useLocation();
   
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
       <Routes location={location} key={location.pathname}>
         {/* Public Store Pages */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
