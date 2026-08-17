@@ -16,7 +16,7 @@ const indianStates = [
 ];
 
 // ✅ Change this to YOUR actual UPI ID
-const YOUR_UPI_ID = '7448432423@superyes';
+const YOUR_UPI_ID = 'samstervin-1@oksbi';
 const YOUR_UPI_NAME = 'ODDLY Store';
 
 export default function Checkout() {
