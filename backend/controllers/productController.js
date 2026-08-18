@@ -48,7 +48,7 @@ exports.updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    const { name, description, price, discountedPrice, sizes, isNewArrival, isActive, category } = req.body;
+    const { name, description, price, discountedPrice, sizes, isNewArrival, isActive, category, images: bodyImages } = req.body;
     if (name) product.name = name;
     if (description !== undefined) product.description = description;
     if (price) product.price = Number(price);
@@ -59,6 +59,9 @@ exports.updateProduct = async (req, res) => {
     if (sizes) {
       const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
       product.sizes = parsedSizes;
+    }
+    if (bodyImages && Array.isArray(bodyImages)) {
+      product.images = bodyImages;
     }
     // If new images uploaded, add them
     if (req.files && req.files.length > 0) {

@@ -248,139 +248,140 @@ export default function Products() {
       {showModal && (
         <div style={{ 
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-          background: 'rgba(0,0,0,0.8)', zIndex: 1000, 
+          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, 
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20
+          padding: 20, animation: 'fadeIn 0.2s ease-out'
         }}>
           <div style={{ 
-            background: 'var(--bg2)', width: '100%', maxWidth: 700, 
-            maxHeight: '90vh', overflowY: 'auto', borderRadius: 20,
-            border: '1px solid var(--border)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+            background: 'var(--bg2)', width: '100%', maxWidth: 860, 
+            maxHeight: '90vh', overflowY: 'auto', borderRadius: 24,
+            border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
+            animation: 'slideUp 0.3s ease-out'
           }}>
-            <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg2)', zIndex: 1 }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 24 }}>{editingId ? 'Edit Product' : 'Add New Product'}</h3>
-              <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text2)', cursor: 'pointer' }}>
-                <FiX size={24} />
+            <div style={{ padding: '32px 40px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(12px)', zIndex: 10 }}>
+              <div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: '-0.5px' }}>{editingId ? 'Edit Product' : 'Add New Product'}</h3>
+                <p style={{ color: 'var(--text2)', fontSize: 14, marginTop: 4 }}>Fill in the details to {editingId ? 'update the' : 'create a new'} product catalog.</p>
+              </div>
+              <button onClick={() => setShowModal(false)} style={{ background: 'var(--bg3)', border: '1px solid var(--border)', color: 'var(--text2)', cursor: 'pointer', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} className="close-btn">
+                <FiX size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ padding: 32 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-                <div className="form-group">
-                  <label className="label">Product Name</label>
-                  <input 
-                    type="text" 
-                    value={formData.name} 
-                    onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                    required 
-                  />
+            <form onSubmit={handleSubmit} style={{ padding: 40 }}>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+                {/* Left Column: Basic Details */}
+                <div>
+                  <h4 style={{ fontSize: 16, marginBottom: 24, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text)' }}>Basic Information</h4>
+                  <div className="form-group" style={{ marginBottom: 20 }}>
+                    <label className="label">Product Name</label>
+                    <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Vintage Denim Jacket" required style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12 }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 20 }}>
+                    <label className="label">Category</label>
+                    <div style={{ position: 'relative' }}>
+                      <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12, appearance: 'none' }}>
+                        <option value="T-Shirt">T-Shirt</option>
+                        <option value="Shirt">Shirt</option>
+                        <option value="Hoodie">Hoodie</option>
+                        <option value="Accessories">Accessories</option>
+                      </select>
+                      <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text2)' }}>▼</div>
+                    </div>
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 20 }}>
+                    <label className="label">Description</label>
+                    <textarea rows="5" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Describe the product details, fabric, and fit..." style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12, resize: 'vertical' }}></textarea>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="label">Category</label>
-                  <select 
-                    value={formData.category} 
-                    onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  >
-                    <option value="T-Shirt">T-Shirt</option>
-                    <option value="Shirt">Shirt</option>
-                    <option value="Hoodie">Hoodie</option>
-                    <option value="Accessories">Accessories</option>
-                  </select>
-                </div>
-              </div>
 
-              <div className="form-group">
-                <label className="label">Description</label>
-                <textarea 
-                  rows="3" 
-                  value={formData.description} 
-                  onChange={e => setFormData({ ...formData, description: e.target.value })}
-                ></textarea>
-              </div>
+                {/* Right Column: Pricing & Options */}
+                <div>
+                  <h4 style={{ fontSize: 16, marginBottom: 24, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text)' }}>Pricing & Options</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+                    <div className="form-group">
+                      <label className="label">Original Price (₹)</label>
+                      <input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="0.00" required style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12 }} />
+                    </div>
+                    <div className="form-group">
+                      <label className="label">Discounted Price (₹)</label>
+                      <input type="number" value={formData.discountedPrice} onChange={e => setFormData({ ...formData, discountedPrice: e.target.value })} placeholder="0.00" required style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12 }} />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group" style={{ marginBottom: 28 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', background: 'var(--bg3)', padding: '16px 20px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.05)', transition: 'border-color 0.2s' }} className="toggle-card">
+                      <div style={{ position: 'relative', width: 44, height: 24, background: formData.isNewArrival ? 'var(--text)' : 'var(--border)', borderRadius: 20, transition: 'background 0.3s' }}>
+                        <div style={{ position: 'absolute', top: 2, left: formData.isNewArrival ? 22 : 2, width: 20, height: 20, background: formData.isNewArrival ? 'var(--bg)' : '#fff', borderRadius: '50%', transition: 'left 0.3s', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }} />
+                      </div>
+                      <input type="checkbox" checked={formData.isNewArrival} onChange={e => setFormData({ ...formData, isNewArrival: e.target.checked })} hidden />
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Mark as New Arrival</div>
+                        <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 2 }}>Highlight this product on the storefront</div>
+                      </div>
+                    </label>
+                  </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-                <div className="form-group">
-                  <label className="label">Original Price (₹)</label>
-                  <input 
-                    type="number" 
-                    value={formData.price} 
-                    onChange={e => setFormData({ ...formData, price: e.target.value })} 
-                    required 
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="label">Discounted Price (₹)</label>
-                  <input 
-                    type="number" 
-                    value={formData.discountedPrice} 
-                    onChange={e => setFormData({ ...formData, discountedPrice: e.target.value })} 
-                    required 
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="label">New Arrival?</label>
-                  <div style={{ height: 46, display: 'flex', alignItems: 'center' }}>
-                    <input 
-                      type="checkbox" 
-                      style={{ width: 24, height: 24, cursor: 'pointer' }}
-                      checked={formData.isNewArrival}
-                      onChange={e => setFormData({ ...formData, isNewArrival: e.target.checked })}
-                    />
+                  <div>
+                    <label className="label" style={{ marginBottom: 12 }}>Stock Management (Sizes)</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+                      {formData.sizes.map(s => (
+                        <div key={s.size} style={{ display: 'flex', alignItems: 'center', background: 'var(--bg3)', padding: '8px 12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ width: 40, fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{s.size}</div>
+                          <div style={{ flex: 1, position: 'relative' }}>
+                            <input type="number" value={s.quantity} onChange={e => handleSizeChange(s.size, e.target.value)} style={{ width: '100%', padding: '8px 12px', background: 'var(--bg2)', border: '1px solid var(--border)', textAlign: 'right', borderRadius: 8, fontSize: 14, fontWeight: 500 }} />
+                            <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: 'var(--text2)', pointerEvents: 'none' }}>Qty</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginBottom: 24 }}>
-                <label className="label">Stock Management (Sizes)</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-                  {formData.sizes.map(s => (
-                    <div key={s.size} style={{ background: 'var(--bg3)', padding: 12, borderRadius: 12, border: '1px solid var(--border)' }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 8 }}>Size {s.size}</div>
-                      <input 
-                        type="number" 
-                        value={s.quantity} 
-                        onChange={e => handleSizeChange(s.size, e.target.value)}
-                        style={{ padding: '8px 12px' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ marginBottom: 32 }}>
-                <label className="label">Product Images</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
+              {/* Full Width: Images */}
+              <div style={{ marginTop: 48 }}>
+                <h4 style={{ fontSize: 16, marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--text)' }}>Product Images</span>
+                  <span style={{ fontSize: 12, color: 'var(--text2)', fontWeight: 400 }}>Up to 5 images (1080x1080 recommended)</span>
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
                   {formData.images.map((img, idx) => (
-                    <div key={idx} style={{ position: 'relative', aspectRatio: '1/1' }}>
-                      <img 
-                        src={img.startsWith('http') ? img : `/api/uploads/${img}`} 
-                        alt="" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10, border: '1px solid var(--border)' }}
-                      />
-                      <button 
-                        type="button" 
-                        onClick={() => removeImage(idx)}
-                        style={{ position: 'absolute', top: -6, right: -6, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 10 }}
-                      >
-                        <FiX />
-                      </button>
+                    <div key={idx} style={{ position: 'relative', aspectRatio: '1/1', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }} className="img-preview">
+                      <img src={img.startsWith('http') ? img : `/api/uploads/${img}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div className="img-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', opacity: 0, transition: 'all 0.2s ease-out', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(2px)' }}>
+                        <button type="button" onClick={() => removeImage(idx)} style={{ background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transform: 'scale(0.8)', transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }} className="del-btn">
+                          <FiTrash2 size={18} />
+                        </button>
+                      </div>
                     </div>
                   ))}
-                  <label style={{ 
-                    aspectRatio: '1/1', border: '2px dashed var(--border)', 
-                    borderRadius: 10, display: 'flex', flexDirection: 'column', 
-                    alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                    color: 'var(--text2)', transition: 'all 0.2s'
-                  }} className="upload-btn">
-                    {uploading ? <div className="spinner"></div> : <><FiUpload size={20} /> <span style={{ fontSize: 10, marginTop: 4 }}>Upload</span></>}
-                    <input type="file" multiple hidden onChange={handleImageUpload} accept="image/*" />
-                  </label>
+                  {formData.images.length < 5 && (
+                    <label style={{ 
+                      aspectRatio: '1/1', border: '2px dashed rgba(255,255,255,0.15)', 
+                      borderRadius: 16, display: 'flex', flexDirection: 'column', 
+                      alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      color: 'var(--text2)', transition: 'all 0.2s ease-out', background: 'rgba(255,255,255,0.02)'
+                    }} className="upload-btn">
+                      {uploading ? <div className="spinner"></div> : (
+                        <>
+                          <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, color: 'var(--text)', transition: 'all 0.2s' }} className="upload-icon">
+                            <FiUpload size={20} />
+                          </div>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>Upload Image</span>
+                          <span style={{ fontSize: 11, marginTop: 4, opacity: 0.7 }}>PNG, JPG, WEBP</span>
+                        </>
+                      )}
+                      <input type="file" multiple hidden onChange={handleImageUpload} accept="image/*" />
+                    </label>
+                  )}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 16, marginTop: 40 }}>
-                <button type="button" className="btn-outline" onClick={() => setShowModal(false)} style={{ flex: 1 }}>Cancel</button>
-                <button type="submit" className="btn-primary" style={{ flex: 2 }}>{editingId ? 'Save Changes' : 'Create Product'}</button>
+              <div style={{ display: 'flex', gap: 16, marginTop: 48, paddingTop: 32, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, padding: '16px', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text)', borderRadius: 14, fontWeight: 600, fontSize: 14, transition: 'all 0.2s' }} className="btn-cancel">Cancel</button>
+                <button type="submit" style={{ flex: 2, padding: '16px', background: 'var(--text)', border: 'none', color: 'var(--bg)', borderRadius: 14, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} className="btn-save">{editingId ? 'Save Changes' : 'Create Product'}</button>
               </div>
             </form>
           </div>
@@ -388,9 +389,31 @@ export default function Products() {
       )}
 
       <style>{`
-        .upload-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .close-btn:hover { background: rgba(255,255,255,0.1) !important; color: var(--text) !important; }
+        
+        .upload-btn:hover { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.05) !important; }
+        .upload-btn:hover .upload-icon { background: var(--text) !important; color: var(--bg) !important; transform: translateY(-2px); }
+        
+        .img-preview:hover .img-overlay { opacity: 1 !important; }
+        .img-preview:hover .del-btn { transform: scale(1) !important; }
+        .del-btn:hover { background: #ff1a1a !important; transform: scale(1.1) !important; box-shadow: 0 4px 12px rgba(255,26,26,0.4); }
+        
+        .toggle-card:hover { border-color: rgba(255,255,255,0.2) !important; background: rgba(255,255,255,0.03) !important; }
+        
+        .btn-cancel:hover { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.2) !important; }
+        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(255,255,255,0.15); background: #f0f0f0 !important; }
+        .btn-save:active { transform: translateY(1px); }
+        
+        .spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--text); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        /* Smooth transitions for inputs */
+        input, select, textarea { transition: all 0.2s ease-in-out !important; }
+        input:focus, select:focus, textarea:focus { border-color: rgba(255,255,255,0.4) !important; box-shadow: 0 0 0 3px rgba(255,255,255,0.05); }
       `}</style>
     </div>
   );
