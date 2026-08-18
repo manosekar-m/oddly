@@ -384,7 +384,7 @@ export default function Products() {
                           <span style={{ fontSize: 11, marginTop: 4, opacity: 0.7 }}>PNG, JPG, WEBP</span>
                         </>
                       )}
-                      <input type="file" multiple hidden onChange={handleImageUpload} accept="image/*" />
+                      <input type="file" multiple style={{ display: 'none' }} onChange={handleImageUpload} accept="image/*" />
                     </label>
                   )}
                 </div>
