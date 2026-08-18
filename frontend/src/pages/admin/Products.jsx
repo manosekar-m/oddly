@@ -21,6 +21,7 @@ export default function Products() {
       { size: 'M', quantity: 0 },
       { size: 'L', quantity: 0 },
       { size: 'XL', quantity: 0 },
+      { size: 'XXL', quantity: 0 },
     ],
     images: [],
   });
@@ -138,6 +139,7 @@ export default function Products() {
         { size: 'M', quantity: 0 },
         { size: 'L', quantity: 0 },
         { size: 'XL', quantity: 0 },
+        { size: 'XXL', quantity: 0 },
       ],
       images: [],
     });
