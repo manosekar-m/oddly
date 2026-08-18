@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const sizeSchema = new mongoose.Schema({
-  size: { type: String, enum: ['S', 'M', 'L', 'XL'], required: true },
+  size: { type: String, enum: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], required: true },
   quantity: { type: Number, required: true, default: 0 },
 });
 
