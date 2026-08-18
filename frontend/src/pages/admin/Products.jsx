@@ -22,6 +22,7 @@ export default function Products() {
       { size: 'L', quantity: 0 },
       { size: 'XL', quantity: 0 },
       { size: 'XXL', quantity: 0 },
+      { size: 'XXXL', quantity: 0 },
     ],
     images: [],
   });
@@ -101,6 +102,13 @@ export default function Products() {
 
   const handleEdit = (product) => {
     setEditingId(product._id);
+    
+    const defaultSizes = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    const mergedSizes = defaultSizes.map(size => {
+      const existing = product.sizes.find(s => s.size === size);
+      return existing || { size, quantity: 0 };
+    });
+
     setFormData({
       name: product.name,
       description: product.description,
@@ -108,7 +116,7 @@ export default function Products() {
       discountedPrice: product.discountedPrice,
       category: product.category,
       isNewArrival: product.isNewArrival,
-      sizes: product.sizes,
+      sizes: mergedSizes,
       images: product.images,
     });
     setShowModal(true);
@@ -140,6 +148,7 @@ export default function Products() {
         { size: 'L', quantity: 0 },
         { size: 'XL', quantity: 0 },
         { size: 'XXL', quantity: 0 },
+        { size: 'XXXL', quantity: 0 },
       ],
       images: [],
     });
