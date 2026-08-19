@@ -45,8 +45,8 @@ export default function Contact() {
         {/* Left — Info Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {[
-            { icon: <FiMail size={22} />, label: 'Email Us', value: 'support@oddly.com', sub: 'We reply within 24 hours' },
-            { icon: <FiPhone size={22} />, label: 'Call Us', value: '+91 74484 32423', sub: 'Mon–Sat, 10am–6pm IST' },
+            { icon: <FiMail size={22} />, label: 'Email Us', value: 'oddlymenswear@gmail.com', sub: 'We reply within 24 hours' },
+            { icon: <FiPhone size={22} />, label: 'Call Us', value: '+91 63798 33844', sub: 'Mon–Sat, 10am–6pm IST' },
             { icon: <FiMapPin size={22} />, label: 'Visit Us', value: 'Tamil Nadu, India', sub: 'ODDLY HQ' },
           ].map(item => (
             <div key={item.label} style={{
@@ -77,7 +77,7 @@ export default function Contact() {
             <div style={{ fontSize: 12, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Follow Us</div>
             <div style={{ display: 'flex', gap: 12 }}>
               {[
-                { icon: <FiInstagram size={18} />, label: 'Instagram', href: '#' },
+                { icon: <FiInstagram size={18} />, label: 'Instagram', href: 'https://www.instagram.com/oddly_wear/' },
                 { icon: <FiTwitter size={18} />, label: 'Twitter', href: '#' },
               ].map(s => (
                 <a key={s.label} href={s.href} style={{

@@ -6,17 +6,12 @@ export default function RefundPolicy() {
       <div style={{ color: 'var(--text2)', fontSize: 16, lineHeight: 1.8 }}>
         <p style={{ marginBottom: 16 }}>
           <strong>Returns & Exchanges</strong><br />
-          We want you to be completely satisfied with your purchase from ODDLY. We accept returns and exchanges within 7 days of order delivery. The items must be unused, unwashed, and in their original condition with all tags attached.
+          Please note that there are <strong>no returns</strong> once a product is purchased. All sales are final. We encourage you to carefully review your order before completing your purchase.
         </p>
 
         <p style={{ marginBottom: 16 }}>
-          <strong>Refunds</strong><br />
-          Once your return is received and inspected, we will notify you of the approval or rejection of your refund. Approved refunds will be processed and automatically applied to your original method of payment within 5-7 business days.
-        </p>
-
-        <p style={{ marginBottom: 16 }}>
-          <strong>How to Initiate a Return</strong><br />
-          To initiate a return or exchange, please contact us at <strong>support@oddly.in</strong> with your order number and reason for return.
+          <strong>Support</strong><br />
+          If you received a defective or incorrect item, please contact us at <strong>oddlymenswear@gmail.com</strong> with your order number and photos of the issue, and we will make it right.
         </p>
       </div>
     </div>

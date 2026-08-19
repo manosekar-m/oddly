@@ -29,7 +29,7 @@ export default function Footer() {
               Designed with purpose, worn with confidence.
             </p>
             <div className="social-links">
-              <a href="#" className="social-icon"><FiInstagram size={20} /></a>
+              <a href="https://www.instagram.com/oddly_wear/" target="_blank" rel="noopener noreferrer" className="social-icon"><FiInstagram size={20} /></a>
               <a href="#" className="social-icon"><FiTwitter size={20} /></a>
               <a href="#" className="social-icon"><FiFacebook size={20} /></a>
             </div>
@@ -49,7 +49,7 @@ export default function Footer() {
             <h4 className="footer-col-title">Support</h4>
             <Link to="/contact" className="footer-link" onClick={scrollTop}>Contact Us</Link>
             <Link to="/refund-policy" className="footer-link" onClick={scrollTop}>Refund Policy</Link>
-            <a href="mailto:support@oddly.in" className="footer-link">support@oddly.in</a>
+            <a href="mailto:oddlymenswear@gmail.com" className="footer-link">oddlymenswear@gmail.com</a>
             <a href="tel:+916379833844" className="footer-link">+91 63798 33844</a>
           </div>
         </div>

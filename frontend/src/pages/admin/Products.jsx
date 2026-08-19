@@ -292,14 +292,31 @@ export default function Products() {
                   <div className="form-group" style={{ marginBottom: 20 }}>
                     <label className="label">Category</label>
                     <div style={{ position: 'relative' }}>
-                      <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12, appearance: 'none' }}>
+                      <select 
+                        value={['T-Shirt', 'Shirt', 'Hoodie', 'Sports wear', 'Accessories'].includes(formData.category) ? formData.category : 'Other'} 
+                        onChange={e => setFormData({ ...formData, category: e.target.value })} 
+                        style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12, appearance: 'none', width: '100%', color: 'var(--text)', border: 'none' }}
+                      >
                         <option value="T-Shirt">T-Shirt</option>
                         <option value="Shirt">Shirt</option>
                         <option value="Hoodie">Hoodie</option>
+                        <option value="Sports wear">Sports wear</option>
                         <option value="Accessories">Accessories</option>
+                        <option value="Other">Other</option>
                       </select>
                       <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text2)' }}>▼</div>
                     </div>
+                    {(!['T-Shirt', 'Shirt', 'Hoodie', 'Sports wear', 'Accessories'].includes(formData.category)) && (
+                      <input 
+                        type="text" 
+                        placeholder="Enter custom category name" 
+                        value={formData.category === 'Other' ? '' : formData.category}
+                        onChange={e => setFormData({ ...formData, category: e.target.value })}
+                        style={{ background: 'var(--bg3)', padding: '14px 16px', borderRadius: 12, width: '100%', marginTop: 12, border: 'none', color: 'var(--text)' }} 
+                        required
+                        autoFocus
+                      />
+                    )}
                   </div>
                   <div className="form-group" style={{ marginBottom: 20 }}>
                     <label className="label">Description</label>
