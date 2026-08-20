@@ -30,6 +30,8 @@ export default function Profile() {
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [returnModal, setReturnModal] = useState({ open: false, orderId: '', reason: '' });
+  const [returnLoading, setReturnLoading] = useState(false);
 
   useEffect(() => {
     axios.get('/orders/my').then(({ data }) => setOrders(data)).catch(() => {});
@@ -133,7 +135,34 @@ export default function Profile() {
     }
   };
 
-  const statusColor = { placed: '#e8c97e', processing: '#60a5fa', shipped: '#a78bfa', delivered: '#6ecf6e', cancelled: '#e05252' };
+  const handleRequestReturn = async (e) => {
+    e.preventDefault();
+    if (!returnModal.reason.trim()) {
+      toast.error('Please provide a reason for return');
+      return;
+    }
+    setReturnLoading(true);
+    try {
+      const { data } = await axios.post(`/orders/${returnModal.orderId}/return`, { returnReason: returnModal.reason });
+      setOrders(orders.map(o => o._id === data._id ? data : o));
+      toast.success('Return requested successfully');
+      setReturnModal({ open: false, orderId: '', reason: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to request return');
+    } finally {
+      setReturnLoading(false);
+    }
+  };
+
+  const canReturn = (order) => {
+    if (order.orderStatus !== 'delivered' || !order.deliveredAt) return false;
+    if (order.returnRequested) return false;
+    const diffTime = Math.abs(new Date() - new Date(order.deliveredAt));
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 4;
+  };
+
+  const statusColor = { placed: '#e8c97e', processing: '#60a5fa', shipped: '#a78bfa', delivered: '#6ecf6e', cancelled: '#e05252', returned: '#a78bfa' };
 
   return (
     <div className="container page">
@@ -192,8 +221,8 @@ export default function Profile() {
                           transition: 'width 0.5s ease'
                         }} />
 
-                        {['placed', 'processing', 'shipped', 'delivered'].map((s, idx) => {
-                          const isActive = ['placed', 'processing', 'shipped', 'delivered'].indexOf(order.orderStatus) >= idx;
+                        {['placed', 'processing', 'shipped', order.orderStatus === 'returned' ? 'returned' : 'delivered'].map((s, idx) => {
+                          const isActive = ['placed', 'processing', 'shipped', 'delivered', 'returned'].indexOf(order.orderStatus) >= idx;
                           return (
                             <div key={s} style={{ position: 'relative', zIndex: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                               <div style={{ 
@@ -227,7 +256,22 @@ export default function Profile() {
                           <p style={{ color: 'var(--text2)', fontSize: 12 }}>Payment: <span style={{ textTransform: 'capitalize', color: order.paymentStatus === 'paid' ? 'var(--success)' : order.paymentStatus === 'failed' ? 'var(--danger)' : 'var(--accent)' }}>{order.paymentStatus}</span></p>
                           {order.coupon && <p style={{ color: '#6ecf6e', fontSize: 11, fontWeight: 600, marginTop: 4 }}>Coupon: {order.coupon.code}</p>}
                         </div>
-                        <span style={{ fontWeight: 700, color: 'var(--accent)' }}>₹{order.totalAmount}</span>
+                        <div style={{ textAlign: 'right' }}>
+                          <span style={{ fontWeight: 700, color: 'var(--accent)', display: 'block', marginBottom: 8 }}>₹{order.totalAmount}</span>
+                          {canReturn(order) && (
+                            <button 
+                              onClick={() => setReturnModal({ open: true, orderId: order._id, reason: '' })}
+                              style={{ padding: '4px 12px', fontSize: 11, borderRadius: 6, border: '1px solid var(--accent)', background: 'transparent', color: 'var(--accent)', cursor: 'pointer' }}
+                            >
+                              Return Product
+                            </button>
+                          )}
+                          {order.returnRequested && (
+                            <span style={{ fontSize: 11, padding: '4px 8px', borderRadius: 4, background: 'rgba(232, 201, 126, 0.1)', color: 'var(--accent)' }}>
+                              Return: {order.returnStatus}
+                            </span>
+                          )}
+                        </div>
                       </div>
                   </div>
                 ))}
@@ -406,6 +450,36 @@ export default function Profile() {
         @media(max-width:768px){div[style*="grid-template-columns: 280px 1fr"]{grid-template-columns:1fr!important}}
         .input-error { border-color: var(--danger) !important; background: rgba(224, 82, 82, 0.05) !important; }
       `}</style>
+
+      {/* Return Modal */}
+      {returnModal.open && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div style={{ background: 'var(--bg2)', width: '100%', maxWidth: 400, borderRadius: 16, border: '1px solid var(--border)', padding: 24 }}>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 16 }}>Request Return</h3>
+            <form onSubmit={handleRequestReturn}>
+              <div className="form-group">
+                <label className="label">Reason for Return *</label>
+                <textarea 
+                  value={returnModal.reason}
+                  onChange={e => setReturnModal({ ...returnModal, reason: e.target.value })}
+                  placeholder="Please tell us why you want to return this product..."
+                  required
+                  rows={4}
+                  style={{ width: '100%', resize: 'none' }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+                <button type="submit" className="btn-primary" disabled={returnLoading} style={{ flex: 1 }}>
+                  {returnLoading ? 'Submitting...' : 'Submit Request'}
+                </button>
+                <button type="button" className="btn-outline" onClick={() => setReturnModal({ open: false, orderId: '', reason: '' })} style={{ flex: 1 }}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

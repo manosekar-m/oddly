@@ -9,7 +9,8 @@ import {
   FiExternalLink,
   FiTag,
   FiMessageSquare,
-  FiSettings
+  FiSettings,
+  FiRotateCcw
 } from 'react-icons/fi';
 
 export default function Dashboard() {
@@ -25,6 +26,7 @@ export default function Dashboard() {
     { name: 'Overview', path: '/admin', icon: <FiGrid />, end: true },
     { name: 'Products', path: '/admin/products', icon: <FiBox /> },
     { name: 'Orders', path: '/admin/orders', icon: <FiShoppingBag /> },
+    { name: 'Returns', path: '/admin/returns', icon: <FiRotateCcw /> },
     { name: 'Coupons', path: '/admin/coupons', icon: <FiTag /> },
     { name: 'Queries', path: '/admin/queries', icon: <FiMessageSquare /> },
     { name: 'Users', path: '/admin/users', icon: <FiUsers /> },

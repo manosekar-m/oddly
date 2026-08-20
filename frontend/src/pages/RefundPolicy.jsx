@@ -6,7 +6,7 @@ export default function RefundPolicy() {
       <div style={{ color: 'var(--text2)', fontSize: 16, lineHeight: 1.8 }}>
         <p style={{ marginBottom: 16 }}>
           <strong>Returns & Exchanges</strong><br />
-          Please note that there are <strong>no returns</strong> once a product is purchased. All sales are final. We encourage you to carefully review your order before completing your purchase.
+          We offer a <strong>4-day return policy</strong> after the product has been delivered. If you wish to return a product, you can initiate a return request from your account profile within 4 days of delivery. Please provide a reason for your return. After 4 days, all sales are final.
         </p>
 
         <p style={{ marginBottom: 16 }}>

@@ -101,9 +101,14 @@ exports.getOrderById = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
   try {
+    const updateData = { orderStatus: req.body.orderStatus };
+    if (req.body.orderStatus === 'delivered') {
+      updateData.deliveredAt = new Date();
+    }
+    
     const order = await Order.findByIdAndUpdate(
       req.params.id,
-      { orderStatus: req.body.orderStatus },
+      updateData,
       { new: true }
     );
     if (!order) return res.status(404).json({ message: 'Order not found' });
@@ -122,3 +127,49 @@ exports.updatePaymentStatus = async (req, res) => {
     res.json(order);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
+
+exports.requestReturn = async (req, res) => {
+  try {
+    const { returnReason } = req.body;
+    if (!returnReason) return res.status(400).json({ message: 'Return reason is mandatory' });
+
+    const order = await Order.findOne({ _id: req.params.id, user: req.user._id });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.orderStatus !== 'delivered') return res.status(400).json({ message: 'Only delivered orders can be returned' });
+    
+    if (!order.deliveredAt) return res.status(400).json({ message: 'Delivery date not recorded' });
+
+    const diffTime = Math.abs(new Date() - order.deliveredAt);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays > 4) {
+      return res.status(400).json({ message: 'Return window of 4 days has expired' });
+    }
+
+    order.returnRequested = true;
+    order.returnReason = returnReason;
+    order.returnStatus = 'requested';
+    await order.save();
+
+    res.json(order);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+exports.updateReturnStatus = async (req, res) => {
+  try {
+    const { returnStatus } = req.body;
+    const updateData = { returnStatus };
+    if (returnStatus === 'approved') {
+      updateData.orderStatus = 'returned';
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    res.json(order);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+

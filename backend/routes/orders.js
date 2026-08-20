@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { placeOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus } = require('../controllers/orderController');
+const { placeOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus, requestReturn, updateReturnStatus } = require('../controllers/orderController');
 const { protect, adminOnly } = require('../middleware/auth');
 
 const { uploadCloud } = require('../config/cloudinary');
@@ -17,5 +17,7 @@ router.get('/', protect, adminOnly, getAllOrders);
 router.get('/:id', protect, getOrderById);
 router.put('/:id/status', protect, adminOnly, updateOrderStatus);
 router.put('/:id/payment', protect, adminOnly, updatePaymentStatus);
+router.post('/:id/return', protect, requestReturn);
+router.put('/:id/return-status', protect, adminOnly, updateReturnStatus);
 
 module.exports = router;

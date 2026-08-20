@@ -26,7 +26,11 @@ const orderSchema = new mongoose.Schema({
   razorpayOrderId: { type: String, default: '' },
   razorpayPaymentId: { type: String, default: '' },
   paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
-  orderStatus: { type: String, enum: ['placed', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'placed' },
+  orderStatus: { type: String, enum: ['placed', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'], default: 'placed' },
+  deliveredAt: { type: Date },
+  returnRequested: { type: Boolean, default: false },
+  returnReason: { type: String, default: '' },
+  returnStatus: { type: String, enum: ['none', 'requested', 'approved', 'rejected'], default: 'none' },
   coupon: { type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' },
 }, { timestamps: true });
 

@@ -30,6 +30,7 @@ import Orders from './pages/admin/Orders';
 import Users from './pages/admin/Users';
 import Coupons from './pages/admin/Coupons';
 import Queries from './pages/admin/Queries';
+import Returns from './pages/admin/Returns';
 import Settings from './pages/admin/Settings';
 
 // ✅ Wrapper: redirects to /register if not logged in
@@ -62,6 +63,7 @@ export default function App() {
                 <Route index element={<Overview />} />
                 <Route path="products" element={<Products />} />
                 <Route path="orders" element={<Orders />} />
+                <Route path="returns" element={<Returns />} />
                 <Route path="users" element={<Users />} />
                 <Route path="coupons" element={<Coupons />} />
                 <Route path="queries" element={<Queries />} />
