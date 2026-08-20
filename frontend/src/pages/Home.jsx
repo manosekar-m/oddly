@@ -2,17 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import axios from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
-import { FiSearch, FiChevronDown } from 'react-icons/fi';
-import { motion } from 'framer-motion';
+import { FiSearch, FiChevronDown, FiFilter, FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+  const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef(null);
+
+  const availableSizes = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
@@ -42,6 +47,15 @@ export default function Home() {
   const filtered = products
     .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
     .filter(p => category === 'All' || p.category === category)
+    .filter(p => {
+      if (selectedSizes.length === 0) return true;
+      return p.sizes.some(s => selectedSizes.includes(s.size) && s.quantity > 0);
+    })
+    .filter(p => {
+      const min = priceRange.min === '' ? 0 : Number(priceRange.min);
+      const max = priceRange.max === '' ? Infinity : Number(priceRange.max);
+      return p.discountedPrice >= min && p.discountedPrice <= max;
+    })
     .sort((a, b) => {
       if (sortBy === 'price-low') return a.discountedPrice - b.discountedPrice;
       if (sortBy === 'price-high') return b.discountedPrice - a.discountedPrice;
@@ -136,6 +150,17 @@ export default function Home() {
                 />
               </div>
 
+              <button 
+                className={`filter-toggle-btn ${showFilters ? 'active' : ''}`}
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <FiFilter className="filter-icon" />
+                Filters
+                {(category !== 'All' || selectedSizes.length > 0 || priceRange.min !== '' || priceRange.max !== '') && (
+                  <span className="filter-badge"></span>
+                )}
+              </button>
+
               <div className="custom-select-wrapper" ref={sortRef} onClick={() => setSortOpen(!sortOpen)}>
                 <div className={`premium-select ${sortOpen ? 'open' : ''}`}>
                   {sortOptions.find(opt => opt.value === sortBy)?.label || 'Newest First'}
@@ -163,30 +188,99 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 24, marginBottom: 32, overflowX: 'auto', paddingBottom: 8, borderBottom: '1px solid var(--border)' }}>
-            {categories.map(cat => (
-              <button 
-                key={cat}
-                onClick={() => setCategory(cat)}
-                style={{ 
-                  padding: '8px 0', 
-                  background: 'none', 
-                  color: category === cat ? '#fff' : 'var(--text2)', 
-                  border: 'none',
-                  borderBottom: category === cat ? '2px solid #fff' : '2px solid transparent',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.3s ease',
-                  marginBottom: '-1px'
-                }}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div 
+                className="filters-panel"
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: 'auto', marginTop: 24 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {cat}
-              </button>
-            ))}
-          </div>
+                <div className="filters-grid">
+                  <div className="filter-group">
+                    <h4 className="filter-title">Category</h4>
+                    <div className="filter-chips">
+                      {categories.map(cat => (
+                        <button
+                          key={cat}
+                          onClick={() => setCategory(cat)}
+                          className={`filter-chip ${category === cat ? 'active' : ''}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="filter-group">
+                    <h4 className="filter-title">Size</h4>
+                    <div className="filter-chips">
+                      {availableSizes.map(size => (
+                        <button
+                          key={size}
+                          onClick={() => {
+                            if (selectedSizes.includes(size)) {
+                              setSelectedSizes(selectedSizes.filter(s => s !== size));
+                            } else {
+                              setSelectedSizes([...selectedSizes, size]);
+                            }
+                          }}
+                          className={`filter-chip ${selectedSizes.includes(size) ? 'active' : ''}`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="filter-group">
+                    <h4 className="filter-title">Price Range</h4>
+                    <div className="price-inputs">
+                      <div className="price-input-wrapper">
+                        <span className="price-currency">₹</span>
+                        <input 
+                          type="number" 
+                          placeholder="Min" 
+                          value={priceRange.min}
+                          onChange={e => setPriceRange({ ...priceRange, min: e.target.value })}
+                          className="price-input"
+                        />
+                      </div>
+                      <span className="price-separator">-</span>
+                      <div className="price-input-wrapper">
+                        <span className="price-currency">₹</span>
+                        <input 
+                          type="number" 
+                          placeholder="Max" 
+                          value={priceRange.max}
+                          onChange={e => setPriceRange({ ...priceRange, max: e.target.value })}
+                          className="price-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {(category !== 'All' || selectedSizes.length > 0 || priceRange.min !== '' || priceRange.max !== '') && (
+                    <div className="filter-actions">
+                      <button 
+                        className="clear-filters-btn"
+                        onClick={() => {
+                          setCategory('All');
+                          setSelectedSizes([]);
+                          setPriceRange({ min: '', max: '' });
+                        }}
+                      >
+                        <FiX size={14} /> Clear All
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+
           
           {loading ? (
             <div className="product-grid">
@@ -602,6 +696,159 @@ export default function Home() {
         @media (max-width: 768px) {
           .search-wrapper { min-width: 100%; }
           .custom-select-wrapper { min-width: 100%; }
+          .filters-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Filter Styles */
+        .filter-toggle-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 0 24px;
+          height: 52px;
+          background: rgba(22, 22, 22, 0.6);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 100px;
+          color: #fff;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .filter-toggle-btn:hover, .filter-toggle-btn.active {
+          background: rgba(26, 26, 26, 0.8);
+          border-color: rgba(232, 201, 126, 0.4);
+        }
+
+        .filter-badge {
+          width: 8px;
+          height: 8px;
+          background: var(--accent);
+          border-radius: 50%;
+          position: absolute;
+          top: 14px;
+          right: 14px;
+        }
+
+        .filters-panel {
+          background: rgba(22, 22, 22, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 20px;
+          overflow: hidden;
+          margin-bottom: 32px;
+        }
+
+        .filters-grid {
+          padding: 32px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 32px;
+          position: relative;
+        }
+
+        .filter-title {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: var(--text2);
+          margin-bottom: 16px;
+          font-weight: 600;
+        }
+
+        .filter-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .filter-chip {
+          padding: 8px 16px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 100px;
+          color: var(--text);
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-chip.active {
+          background: rgba(232, 201, 126, 0.1);
+          border-color: var(--accent);
+          color: var(--accent);
+        }
+
+        .price-inputs {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .price-input-wrapper {
+          position: relative;
+          flex: 1;
+        }
+
+        .price-currency {
+          position: absolute;
+          left: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--text2);
+          font-size: 14px;
+        }
+
+        .price-input {
+          width: 100%;
+          padding: 12px 14px 12px 28px;
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          color: #fff;
+          font-size: 14px;
+          transition: border-color 0.3s;
+        }
+
+        .price-input:focus {
+          border-color: rgba(232, 201, 126, 0.4);
+          outline: none;
+        }
+
+        .price-separator {
+          color: var(--text2);
+        }
+
+        .filter-actions {
+          grid-column: 1 / -1;
+          display: flex;
+          justify-content: flex-end;
+          padding-top: 16px;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .clear-filters-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: none;
+          border: none;
+          color: var(--text2);
+          font-size: 13px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+
+        .clear-filters-btn:hover {
+          color: var(--text);
         }
       `}</style>
     </div>
