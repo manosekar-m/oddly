@@ -18,6 +18,30 @@ export default function ProductDetail() {
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [loading, setLoading] = useState(true);
   const [openAccordion, setOpenAccordion] = useState('details');
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      setSelectedImage(prev => (prev + 1) % product.images.length);
+    }
+    if (isRightSwipe) {
+      setSelectedImage(prev => (prev - 1 + product.images.length) % product.images.length);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,7 +76,13 @@ export default function ProductDetail() {
       {showSizeChart && <SizeChart onClose={() => setShowSizeChart(false)} />}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 48 }}>
         <div>
-          <div className="product-image-container" style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 12, aspectRatio: '3/4', background: 'var(--bg2)', position: 'relative' }}>
+          <div 
+            className="product-image-container" 
+            style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 12, aspectRatio: '3/4', background: 'var(--bg2)', position: 'relative' }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <img 
               src={product.images[selectedImage] || 'https://via.placeholder.com/400x500?text=No+Image'} 
               alt={product.name} 
@@ -152,7 +182,7 @@ export default function ProductDetail() {
               </button>
               {openAccordion === 'shipping' && (
                 <div style={{ paddingBottom: 16, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8 }}>
-                  <p>Free standard shipping on orders over $100. Returns accepted within 14 days of delivery for unworn items in original condition.</p>
+                  <p>{product.returnPolicy || 'Returns accepted within 4 days with valid reason. Shipping charges based on location.'}</p>
                 </div>
               )}
             </div>

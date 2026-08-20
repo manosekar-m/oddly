@@ -15,6 +15,7 @@ const productSchema = new mongoose.Schema({
   category: { type: String, default: 'T-Shirt' },
   isNewArrival: { type: Boolean, default: true },
   isActive: { type: Boolean, default: true },
+  returnPolicy: { type: String, default: 'Returns accepted within 4 days with valid reason. Shipping charges based on location.' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);
