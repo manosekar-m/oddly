@@ -49,7 +49,7 @@ exports.verifyOTP = async (req, res) => {
     if (user.otpExpiry < new Date()) return res.status(400).json({ message: 'OTP expired' });
     user.isVerified = true; user.otp = undefined; user.otpExpiry = undefined;
     await user.save();
-    res.json({ message: 'Verified successfully', token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, mobile: user.mobile, role: user.role } });
+    res.json({ message: 'Verified successfully', token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, mobile: user.mobile, role: user.role, address: user.address } });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
@@ -62,7 +62,7 @@ exports.login = async (req, res) => {
     if (!user.isVerified) return res.status(400).json({ message: 'Please verify OTP first' });
     const isMatch = await user.matchPassword(password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-    res.json({ token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, mobile: user.mobile, role: user.role } });
+    res.json({ token: generateToken(user._id), user: { _id: user._id, name: user.name, email: user.email, mobile: user.mobile, role: user.role, address: user.address } });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
@@ -74,7 +74,7 @@ exports.adminLogin = async (req, res) => {
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       let admin = await User.findOne({ email, role: 'admin' });
       if (!admin) admin = await User.create({ name: 'Admin', email, password, role: 'admin', isVerified: true });
-      return res.json({ token: generateToken(admin._id), user: { _id: admin._id, name: admin.name, email: admin.email, role: 'admin' } });
+      return res.json({ token: generateToken(admin._id), user: { _id: admin._id, name: admin.name, email: admin.email, role: 'admin', address: admin.address } });
     }
     res.status(400).json({ message: 'Invalid admin credentials' });
   } catch (err) { res.status(500).json({ message: err.message }); }
