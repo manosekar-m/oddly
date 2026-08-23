@@ -53,43 +53,16 @@ export default function Cart() {
     updateQuantity(item.productId, item.size, item.quantity + 1);
   };
 
-  const handleProceedCheckout = async () => {
-    if (deliveryResult && deliveryResult.serviceable) {
-      navigate('/checkout');
+  const handleProceedCheckout = () => {
+    if (!deliveryResult) {
+      toast.error('Please enter your pincode and check delivery availability first.');
       return;
     }
-
-    if (deliveryResult && !deliveryResult.serviceable) {
+    if (!deliveryResult.serviceable) {
       toast.error('Delivery is not available to the entered pincode.');
       return;
     }
-
-    // No delivery result yet, check if user has a saved pincode
-    const savedPincode = user?.address?.pincode;
-    if (savedPincode && savedPincode.length === 6) {
-      setLoading(true);
-      try {
-        const { data } = await api.post('/delivery/check', {
-          pincode: savedPincode,
-          cartValue: finalTotal,
-          totalItems,
-          paymentMethod: 'Prepaid'
-        });
-        
-        if (data.serviceable) {
-          setDeliveryResult(data);
-          navigate('/checkout');
-        } else {
-          toast.error(data.message || 'Delivery not available to your saved address.');
-        }
-      } catch (err) {
-        toast.error('Failed to verify delivery for your saved address.');
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      toast.error('Please check delivery availability for your pincode before proceeding.');
-    }
+    navigate('/checkout');
   };
 
   return (

@@ -21,6 +21,7 @@ export default function ProductDetail() {
   const [openAccordion, setOpenAccordion] = useState('details');
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [deliveryResult, setDeliveryResult] = useState(null);
 
   const minSwipeDistance = 50;
 
@@ -60,11 +61,31 @@ export default function ProductDetail() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!selectedSize) return toast.error('Please select a size');
+    if (!selectedSize) {
+      toast.error('Please select a size');
+      return false;
+    }
     const sizeObj = product.sizes.find(s => s.size === selectedSize);
-    if (!sizeObj || sizeObj.quantity === 0) return toast.error('This size is out of stock');
+    if (!sizeObj || sizeObj.quantity === 0) {
+      toast.error('This size is out of stock');
+      return false;
+    }
     addToCart(product, selectedSize);
     toast.success('Added to cart!');
+    return true;
+  };
+
+  const handleBuyNow = () => {
+    if (!deliveryResult) {
+      toast.error('Please check delivery availability for your pincode first.');
+      return;
+    }
+    if (!deliveryResult.serviceable) {
+      toast.error('Delivery is not available to the entered pincode.');
+      return;
+    }
+    const added = handleAddToCart();
+    if (added) navigate('/cart');
   };
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: 80, color: 'var(--text2)' }}>Loading...</div>;
@@ -139,13 +160,14 @@ export default function ProductDetail() {
 
           <div style={{ display: 'flex', gap: 12, marginBottom: 40 }}>
             <button className="btn-primary" onClick={handleAddToCart} style={{ flex: 1, padding: '16px' }}>Add to Cart</button>
-            <button className="btn-outline" onClick={() => { handleAddToCart(); if (selectedSize) navigate('/cart'); }} style={{ flex: 1, padding: '16px' }}>Buy Now</button>
+            <button className="btn-outline" onClick={handleBuyNow} style={{ flex: 1, padding: '16px' }}>Buy Now</button>
           </div>
 
           <DeliveryCheck 
             cartValue={product.discountedPrice}
             totalItems={1}
             paymentMethod="Prepaid"
+            onResult={setDeliveryResult}
           />
 
           <div style={{ borderTop: '1px solid var(--border)' }}>
