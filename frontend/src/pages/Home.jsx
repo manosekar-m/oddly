@@ -357,7 +357,7 @@ export default function Home() {
         .hero-title {
           font-family: var(--font-display);
           font-size: clamp(80px, 18vw, 220px);
-          font-weight: 800;
+          font-weight: 400;
           line-height: 0.9;
           margin-bottom: 20px;
           color: #fff;
@@ -403,6 +403,7 @@ export default function Home() {
         .section-header {
           display: flex;
           align-items: center;
+          justify-content: flex-start;
           gap: 16px;
           margin-bottom: 32px;
         }
@@ -554,7 +555,7 @@ export default function Home() {
 
         .product-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
           gap: 30px;
         }
 
@@ -578,8 +579,8 @@ export default function Home() {
         }
 
         .marquee-item {
-          width: 260px;
-          margin-right: 30px;
+          width: 380px;
+          margin-right: 40px;
           flex-shrink: 0;
         }
 

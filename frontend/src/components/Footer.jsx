@@ -105,7 +105,7 @@ export default function Footer() {
         .footer-heading {
           font-family: var(--font-display);
           font-size: 56px;
-          font-weight: 800;
+          font-weight: 400;
           color: #fff;
           margin-bottom: 12px;
           letter-spacing: -1px;
@@ -238,7 +238,7 @@ export default function Footer() {
         .footer-watermark {
           font-family: var(--font-display);
           font-size: 22vw;
-          font-weight: 800;
+          font-weight: 400;
           line-height: 0.75;
           color: rgba(255,255,255,0.02);
           text-align: center;

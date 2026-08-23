@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-@import url('https://fonts.cdnfonts.com/css/monument-extended');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syncopate:wght@400;700&display=swap');
 
 :root {
   --bg: #000000;
@@ -14,7 +13,7 @@
   --danger: #ff3333;
   --success: #33cc33;
   --radius: 0px;
-  --font-display: 'Monument Extended', sans-serif;
+  --font-display: 'Syncopate', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
 
@@ -107,12 +106,13 @@ button { cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
 
 .page-title {
   font-family: var(--font-display);
-  font-size: clamp(40px, 8vw, 110px);
-  font-weight: 800;
+  font-size: clamp(28px, 4vw, 56px);
+  font-weight: 700;
   letter-spacing: -1px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 0px;
   line-height: 1.1;
+  text-align: left;
 }
 
 .label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }

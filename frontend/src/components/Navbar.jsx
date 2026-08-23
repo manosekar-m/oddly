@@ -141,7 +141,7 @@ export default function Navbar() {
           overflow: hidden;
           z-index: 1002;
           font-size: 11px;
-          font-weight: 800;
+          font-weight: 400;
           text-transform: uppercase;
           letter-spacing: 2px;
           white-space: nowrap;
@@ -195,7 +195,7 @@ export default function Navbar() {
         .logo-text {
           font-family: var(--font-display);
           font-size: 32px;
-          font-weight: 800;
+          font-weight: 400;
           color: #fff;
           letter-spacing: 2px;
           text-transform: uppercase;
