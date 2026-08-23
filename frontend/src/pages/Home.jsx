@@ -356,38 +356,47 @@ export default function Home() {
 
         .hero-title {
           font-family: var(--font-display);
-          font-size: clamp(60px, 12vw, 150px);
+          font-size: clamp(70px, 15vw, 180px);
           font-weight: 800;
-          line-height: 1;
-          margin-bottom: 10px;
+          line-height: 0.9;
+          margin-bottom: 20px;
           color: #fff;
-          letter-spacing: 2px;
+          letter-spacing: 0px;
+          text-transform: uppercase;
+          text-shadow: 0 10px 40px rgba(0,0,0,0.5);
+          position: relative;
         }
 
         .hero-description {
           color: #fff;
-          font-size: 14px;
-          font-weight: 600;
+          font-size: 15px;
+          font-weight: 500;
           text-transform: uppercase;
-          letter-spacing: 2px;
+          letter-spacing: 4px;
           margin-bottom: 40px;
+          opacity: 0.9;
         }
 
         .hero-btn {
-          padding: 16px 48px;
+          padding: 18px 56px;
           font-size: 13px;
+          font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 1.5px;
-          transition: all 0.3s ease;
-          border-radius: 0;
-          background: #fff;
-          color: #000;
+          letter-spacing: 2px;
+          transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+          border-radius: 100px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          color: #fff;
+          border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .hero-btn:hover {
-          background: #000;
-          color: #fff;
-          border-color: #fff;
+          background: #fff;
+          color: #000;
+          transform: translateY(-4px);
+          box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
         }
 
         /* Layout & Spacing */

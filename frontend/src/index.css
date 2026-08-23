@@ -1,4 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('https://fonts.cdnfonts.com/s/72343/NeueMachina-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('https://fonts.cdnfonts.com/s/72343/NeueMachina-Ultrabold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
 
 :root {
   --bg: #000000;
@@ -13,8 +25,8 @@
   --danger: #ff3333;
   --success: #33cc33;
   --radius: 0px;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Neue Machina', sans-serif;
+  --font-body: 'Neue Machina', 'Inter', sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
