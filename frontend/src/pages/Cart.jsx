@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { FiTrash2, FiMinus, FiPlus, FiTag, FiX } from 'react-icons/fi';
 import DeliveryCheck from '../components/DeliveryCheck';
 import toast from 'react-hot-toast';
@@ -12,6 +13,7 @@ export default function Cart() {
     cart, updateQuantity, removeFromCart, cartTotal, 
     coupon, applyCoupon, removeCoupon, discountAmount, finalTotal 
   } = useCart();
+  const { user } = useAuth();
   const [couponCode, setCouponCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [deliveryResult, setDeliveryResult] = useState(null);
@@ -49,6 +51,45 @@ export default function Cart() {
       return;
     }
     updateQuantity(item.productId, item.size, item.quantity + 1);
+  };
+
+  const handleProceedCheckout = async () => {
+    if (deliveryResult && deliveryResult.serviceable) {
+      navigate('/checkout');
+      return;
+    }
+
+    if (deliveryResult && !deliveryResult.serviceable) {
+      toast.error('Delivery is not available to the entered pincode.');
+      return;
+    }
+
+    // No delivery result yet, check if user has a saved pincode
+    const savedPincode = user?.address?.pincode;
+    if (savedPincode && savedPincode.length === 6) {
+      setLoading(true);
+      try {
+        const { data } = await api.post('/delivery/check', {
+          pincode: savedPincode,
+          cartValue: finalTotal,
+          totalItems,
+          paymentMethod: 'Prepaid'
+        });
+        
+        if (data.serviceable) {
+          setDeliveryResult(data);
+          navigate('/checkout');
+        } else {
+          toast.error(data.message || 'Delivery not available to your saved address.');
+        }
+      } catch (err) {
+        toast.error('Failed to verify delivery for your saved address.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast.error('Please check delivery availability for your pincode before proceeding.');
+    }
   };
 
   return (
@@ -166,7 +207,9 @@ export default function Cart() {
               </button>
             </div>
           )}
-          <button className="btn-primary" onClick={() => navigate('/checkout')} style={{ width: '100%', marginTop: 20, padding: 16, fontSize: 15 }}>Proceed to Checkout</button>
+          <button className="btn-primary" onClick={handleProceedCheckout} disabled={loading} style={{ width: '100%', marginTop: 20, padding: 16, fontSize: 15 }}>
+            {loading ? 'Checking Delivery...' : 'Proceed to Checkout'}
+          </button>
           <button onClick={() => navigate('/')} style={{ width: '100%', marginTop: 10, background: 'none', border: 'none', color: 'var(--text2)', fontSize: 13 }}>← Continue Shopping</button>
         </div>
       </div>
