@@ -95,6 +95,7 @@ export default function Checkout() {
     if (form.pincode.length !== 6)
       return toast.error('Valid 6-digit pincode is required');
     setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleScreenshotChange = (e) => {
