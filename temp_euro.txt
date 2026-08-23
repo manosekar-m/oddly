@@ -1,8 +1,0 @@
-@font-face {
-    font-family: 'Eurostile Extended';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Eurostile Extended'), url('https://fonts.cdnfonts.com/s/22761/EurostileExtendedBlack.woff') format('woff');
-}
-
-
