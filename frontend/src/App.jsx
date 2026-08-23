@@ -40,7 +40,7 @@ function AuthGuard({ children }) {
   const { user, loading } = useAuth();
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, color: 'var(--accent)' }}>ODDLY</div>
+      <div style={{ fontFamily: "'Dune Rise', sans-serif", fontSize: 32, color: 'var(--accent)', letterSpacing: 2 }}>ODDLY</div>
       <div style={{ color: 'var(--text2)', fontSize: 14 }}>Loading...</div>
     </div>
   );

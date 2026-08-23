@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syncopate:wght@400;700&display=swap');
 
+@font-face {
+    font-family: 'Dune Rise';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Dune Rise'), url('https://fonts.cdnfonts.com/s/84958/Dune_Rise.woff') format('woff');
+}
+
 :root {
   --bg: #000000;
   --bg2: #0a0a0a;

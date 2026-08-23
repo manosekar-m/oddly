@@ -355,7 +355,7 @@ export default function Home() {
         }
 
         .hero-title {
-          font-family: var(--font-display);
+          font-family: 'Dune Rise', sans-serif;
           font-size: clamp(80px, 18vw, 220px);
           font-weight: 400;
           line-height: 0.9;

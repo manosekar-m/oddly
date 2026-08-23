@@ -193,7 +193,7 @@ export default function Navbar() {
           align-items: center;
         }
         .logo-text {
-          font-family: var(--font-display);
+          font-family: 'Dune Rise', sans-serif;
           font-size: 32px;
           font-weight: 400;
           color: #fff;
