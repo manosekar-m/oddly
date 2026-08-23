@@ -328,7 +328,7 @@ export default function Checkout() {
                       <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 16 }}>Secure Payment via Razorpay</p>
                       <div style={{ background: 'rgba(232,201,126,0.1)', borderRadius: 10, padding: '12px 20px', display: 'inline-block' }}>
                         <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 2 }}>Amount to Pay</p>
-                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{finalTotal}</p>
+                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{displayFinalTotal}</p>
                         {coupon && <p style={{ fontSize: 11, color: '#6ecf6e', marginTop: 4 }}>₹{discountAmount} discount applied</p>}
                       </div>
                     </div>
@@ -345,14 +345,14 @@ export default function Checkout() {
                       <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 16 }}>{YOUR_UPI_NAME}</p>
                       <div style={{ background: 'rgba(232,201,126,0.1)', borderRadius: 10, padding: '12px 20px', display: 'inline-block' }}>
                         <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 2 }}>Amount to Pay</p>
-                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{finalTotal}</p>
+                        <p style={{ fontSize: 32, fontWeight: 800, color: 'var(--accent)' }}>₹{displayFinalTotal}</p>
                         {coupon && <p style={{ fontSize: 11, color: '#6ecf6e', marginTop: 4 }}>₹{discountAmount} discount applied</p>}
                       </div>
                     </div>
                     <div style={{ background: 'var(--surface)', borderRadius: 10, padding: 16, marginBottom: 20, fontSize: 13, color: 'var(--text2)', lineHeight: 1.8, border: '1px solid var(--border)' }}>
                       <strong style={{ color: 'var(--text)' }}>How to pay:</strong><br />
                       1. Open any UPI app (GPay, PhonePe, Paytm)<br />
-                      2. Send <strong style={{ color: 'var(--accent)' }}>₹{finalTotal}</strong> to <strong style={{ color: 'var(--accent)' }}>{YOUR_UPI_ID}</strong><br />
+                      2. Send <strong style={{ color: 'var(--accent)' }}>₹{displayFinalTotal}</strong> to <strong style={{ color: 'var(--accent)' }}>{YOUR_UPI_ID}</strong><br />
                       3. Provide the <strong style={{ color: 'var(--text)' }}>Transaction ID</strong> OR <strong style={{ color: 'var(--text)' }}>Payment Screenshot</strong> below.
                     </div>
                     <div className="form-group">
