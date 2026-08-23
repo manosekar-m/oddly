@@ -34,6 +34,7 @@ app.use('/api/coupons', require('./routes/coupons'));
 app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/queries', require('./routes/queries'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/delivery', require('./routes/delivery'));
 
 app.get('/', (req, res) => res.send('Oddly API running...'));
 

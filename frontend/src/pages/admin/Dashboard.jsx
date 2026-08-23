@@ -10,7 +10,9 @@ import {
   FiTag,
   FiMessageSquare,
   FiSettings,
-  FiRotateCcw
+  FiRotateCcw,
+  FiTruck,
+  FiMapPin
 } from 'react-icons/fi';
 
 export default function Dashboard() {
@@ -27,6 +29,8 @@ export default function Dashboard() {
     { name: 'Products', path: '/admin/products', icon: <FiBox /> },
     { name: 'Orders', path: '/admin/orders', icon: <FiShoppingBag /> },
     { name: 'Returns', path: '/admin/returns', icon: <FiRotateCcw /> },
+    { name: 'Delivery', path: '/admin/delivery', icon: <FiMapPin /> },
+    { name: 'Shipping Rates', path: '/admin/shipping-rates', icon: <FiTruck /> },
     { name: 'Coupons', path: '/admin/coupons', icon: <FiTag /> },
     { name: 'Queries', path: '/admin/queries', icon: <FiMessageSquare /> },
     { name: 'Users', path: '/admin/users', icon: <FiUsers /> },

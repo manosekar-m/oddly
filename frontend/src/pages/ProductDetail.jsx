@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import DeliveryCheck from '../components/DeliveryCheck';
 import { useCart } from '../context/CartContext';
 import SizeChart from '../components/SizeChart';
 import ProductCard from '../components/ProductCard';
@@ -140,6 +141,12 @@ export default function ProductDetail() {
             <button className="btn-primary" onClick={handleAddToCart} style={{ flex: 1, padding: '16px' }}>Add to Cart</button>
             <button className="btn-outline" onClick={() => { handleAddToCart(); if (selectedSize) navigate('/cart'); }} style={{ flex: 1, padding: '16px' }}>Buy Now</button>
           </div>
+
+          <DeliveryCheck 
+            cartValue={product.discountedPrice}
+            totalItems={1}
+            paymentMethod="Prepaid"
+          />
 
           <div style={{ borderTop: '1px solid var(--border)' }}>
             {/* Accordion 1 */}

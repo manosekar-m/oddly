@@ -32,6 +32,8 @@ import Coupons from './pages/admin/Coupons';
 import Queries from './pages/admin/Queries';
 import Returns from './pages/admin/Returns';
 import Settings from './pages/admin/Settings';
+import Delivery from './pages/admin/Delivery';
+import ShippingConfig from './pages/admin/ShippingConfig';
 
 // ✅ Wrapper: redirects to /register if not logged in
 function AuthGuard({ children }) {
@@ -67,6 +69,8 @@ export default function App() {
                 <Route path="users" element={<Users />} />
                 <Route path="coupons" element={<Coupons />} />
                 <Route path="queries" element={<Queries />} />
+                <Route path="delivery" element={<Delivery />} />
+                <Route path="shipping-rates" element={<ShippingConfig />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
 

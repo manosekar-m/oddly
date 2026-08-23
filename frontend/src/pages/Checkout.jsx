@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import axios from '../api/axios';
 import toast from 'react-hot-toast';
+import DeliveryCheck from '../components/DeliveryCheck';
 
 const indianStates = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
@@ -38,6 +39,17 @@ export default function Checkout() {
     pincode: user?.address?.pincode || '',
   });
   const [errors, setErrors] = useState({ mobile: '', district: '', city: '', pincode: '' });
+  
+  // Delivery State
+  const [deliveryResult, setDeliveryResult] = useState(null);
+  
+  // Calculate total items
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Compute actual display totals
+  const displayShippingCost = deliveryResult?.shippingCost || 0;
+  const displayCodCharge = (paymentMode === 'cod' && deliveryResult?.codCharge) ? deliveryResult.codCharge : 0;
+  const displayFinalTotal = finalTotal + displayShippingCost + displayCodCharge;
 
   if (cart.length === 0) { navigate('/cart'); return null; }
 
@@ -114,7 +126,7 @@ export default function Checkout() {
         fd.append('paymentMethod', 'UPI');
         fd.append('transactionId', transactionId.trim());
         fd.append('paymentScreenshot', screenshot);
-        fd.append('totalAmount', finalTotal);
+        fd.append('totalAmount', displayFinalTotal);
         if (coupon && coupon._id) fd.append('couponId', coupon._id);
         await axios.post('/orders', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       } else {
@@ -124,7 +136,7 @@ export default function Checkout() {
           mobile: form.mobile,
           paymentMethod: 'UPI',
           transactionId: transactionId.trim(),
-          totalAmount: finalTotal,
+          totalAmount: displayFinalTotal,
           couponId: (coupon && coupon._id) ? coupon._id : undefined
         });
       }
@@ -158,7 +170,7 @@ export default function Checkout() {
         return;
       }
 
-      const { data } = await axios.post('/orders/razorpay/order', { amount: finalTotal });
+      const { data } = await axios.post('/orders/razorpay/order', { amount: displayFinalTotal });
       
       const options = {
         key: data.key_id,
@@ -407,9 +419,36 @@ export default function Checkout() {
               </div>
             </div>
           ))}
-          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 16 }}>
-            <span>Total</span><span style={{ color: 'var(--accent)' }}>₹{finalTotal}</span>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text2)' }}>
+              <span>Subtotal</span><span>₹{finalTotal}</span>
+            </div>
+            {deliveryResult && (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text2)' }}>
+                  <span>Shipping</span>
+                  <span style={{ color: deliveryResult.freeShippingApplied ? 'var(--success)' : 'var(--text)' }}>
+                    {deliveryResult.freeShippingApplied ? 'FREE' : `₹${deliveryResult.shippingCost}`}
+                  </span>
+                </div>
+                {paymentMode === 'cod' && deliveryResult.codCharge > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text2)' }}>
+                    <span>COD Fee</span><span>₹{deliveryResult.codCharge}</span>
+                  </div>
+                )}
+              </>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 16, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+              <span>Total</span><span style={{ color: 'var(--accent)' }}>₹{displayFinalTotal}</span>
+            </div>
           </div>
+          
+          <DeliveryCheck 
+            cartValue={finalTotal}
+            totalItems={totalItems}
+            paymentMethod={paymentMode === 'razorpay' || paymentMode === 'upi' ? 'Prepaid' : 'COD'}
+            onResult={setDeliveryResult}
+          />
           {step === 2 && (
             <div style={{ marginTop: 16, padding: 12, background: 'var(--surface)', borderRadius: 10, fontSize: 12, color: 'var(--text2)', lineHeight: 1.7 }}>
               <p style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>Delivering to:</p>

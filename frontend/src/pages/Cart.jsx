@@ -1,6 +1,7 @@
-import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import { FiTrash2, FiMinus, FiPlus, FiTag, FiX } from 'react-icons/fi';
+import DeliveryCheck from '../components/DeliveryCheck';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import api from '../api/axios';
@@ -13,7 +14,10 @@ export default function Cart() {
   } = useCart();
   const [couponCode, setCouponCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deliveryResult, setDeliveryResult] = useState(null);
   const navigate = useNavigate();
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   if (cart.length === 0) return (
     <div className="container page" style={{ textAlign: 'center' }}>
@@ -100,7 +104,14 @@ export default function Cart() {
             <span>Subtotal ({cart.length} items)</span><span style={{ color: 'var(--text)' }}>₹{cartTotal}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 14, color: 'var(--text2)' }}>
-            <span>Shipping</span><span style={{ color: '#6ecf6e' }}>FREE</span>
+            <span>Shipping</span>
+            {deliveryResult ? (
+              <span style={{ color: deliveryResult.freeShippingApplied ? '#6ecf6e' : 'var(--text)' }}>
+                {deliveryResult.freeShippingApplied ? 'FREE' : `₹${deliveryResult.shippingCost}`}
+              </span>
+            ) : (
+              <span>Check pincode</span>
+            )}
           </div>
           
           {coupon ? (
@@ -114,7 +125,16 @@ export default function Cart() {
           ) : null}
 
           <div style={{ borderTop: '1px solid var(--border)', marginTop: 16, paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 18 }}>
-            <span>Total</span><span style={{ color: 'var(--accent)' }}>₹{finalTotal}</span>
+            <span>Total</span><span style={{ color: 'var(--accent)' }}>₹{finalTotal + (deliveryResult ? deliveryResult.shippingCost : 0)}</span>
+          </div>
+          
+          <div style={{ marginTop: 24 }}>
+            <DeliveryCheck 
+              cartValue={finalTotal}
+              totalItems={totalItems}
+              paymentMethod="Prepaid"
+              onResult={setDeliveryResult}
+            />
           </div>
 
           {!coupon ? (

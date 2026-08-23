@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
 const { v4: uuidv4 } = require('uuid');
+const { calculateShippingRate } = require('../utils/delivery');
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -46,6 +47,25 @@ exports.placeOrder = async (req, res) => {
     if (!totalAmount) {
       totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     }
+    
+    // Calculate Shipping Rate
+    const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+    const baseWeight = 500;
+    const totalWeightInGrams = totalItems <= 3 ? baseWeight : baseWeight + ((totalItems - 3) * 200);
+    
+    const deliveryData = await calculateShippingRate(
+      shippingAddress.pincode,
+      totalWeightInGrams,
+      totalAmount,
+      paymentMethod
+    );
+
+    if (!deliveryData.serviceable) {
+      return res.status(400).json({ message: deliveryData.message || 'Delivery not available for this pincode' });
+    }
+
+    const finalAmount = totalAmount + deliveryData.shippingCost;
+    
     const paymentId = `UPI-${uuidv4().slice(0, 8).toUpperCase()}`;
 
     // Handle payment screenshot if uploaded
@@ -54,7 +74,10 @@ exports.placeOrder = async (req, res) => {
     const order = await Order.create({
       user: req.user._id,
       items,
-      totalAmount,
+      totalAmount: finalAmount,
+      shippingCost: deliveryData.shippingCost,
+      codCharge: deliveryData.codCharge || 0,
+      estimatedDeliveryDate: deliveryData.estimatedDeliveryDate,
       shippingAddress,
       mobile,
       paymentMethod: paymentMethod || 'UPI',
