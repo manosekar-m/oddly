@@ -105,30 +105,71 @@ export default function ShippingConfig() {
           <tbody>
             {rates.map((rate, idx) => (
               <tr key={rate._id}>
-                <td><strong style={{ textTransform: 'capitalize' }}>{rate.zone}</strong></td>
+                <td><strong style={{ textTransform: 'uppercase', letterSpacing: 1, fontSize: 13 }}>{rate.zone}</strong></td>
                 <td>
-                  <input type="number" value={rate.baseRate} onChange={e => handleRateChange(idx, 'baseRate', e.target.value)} style={{ width: 80, padding: 4 }} />
+                  <input type="number" className="table-input" value={rate.baseRate} onChange={e => handleRateChange(idx, 'baseRate', e.target.value)} />
                 </td>
                 <td>
-                  <input type="number" value={rate.extraRatePer500g} onChange={e => handleRateChange(idx, 'extraRatePer500g', e.target.value)} style={{ width: 80, padding: 4 }} />
+                  <input type="number" className="table-input" value={rate.extraRatePer500g} onChange={e => handleRateChange(idx, 'extraRatePer500g', e.target.value)} />
                 </td>
                 <td>
-                  <input type="number" value={rate.codCharge} onChange={e => handleRateChange(idx, 'codCharge', e.target.value)} style={{ width: 80, padding: 4 }} />
+                  <input type="number" className="table-input" value={rate.codCharge} onChange={e => handleRateChange(idx, 'codCharge', e.target.value)} />
                 </td>
                 <td>
-                  <input type="number" value={rate.freeShippingThreshold} onChange={e => handleRateChange(idx, 'freeShippingThreshold', e.target.value)} style={{ width: 100, padding: 4 }} />
+                  <input type="number" className="table-input" value={rate.freeShippingThreshold} onChange={e => handleRateChange(idx, 'freeShippingThreshold', e.target.value)} />
+                </td>
+                <td style={{ textAlign: 'center' }}>
+                  <input type="checkbox" className="custom-checkbox" checked={rate.codAvailableDefault} onChange={e => handleRateChange(idx, 'codAvailableDefault', e.target.checked)} />
                 </td>
                 <td>
-                  <input type="checkbox" checked={rate.codAvailableDefault} onChange={e => handleRateChange(idx, 'codAvailableDefault', e.target.checked)} />
-                </td>
-                <td>
-                  <button onClick={() => handleSaveRate(rate)} className="btn-outline" style={{ padding: '4px 12px', fontSize: 12 }}>Save</button>
+                  <button onClick={() => handleSaveRate(rate)} className="btn-save-row">Save</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      <style>{`
+        .table-input {
+          width: 100%;
+          max-width: 120px;
+          padding: 8px 12px;
+          background: rgba(20, 20, 20, 0.6);
+          border: 1px solid var(--border);
+          color: var(--text);
+          border-radius: 6px;
+          font-size: 14px;
+          transition: all 0.2s;
+        }
+        .table-input:focus {
+          outline: none;
+          border-color: var(--accent);
+          background: var(--bg);
+        }
+        .custom-checkbox {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+          accent-color: var(--accent);
+        }
+        .btn-save-row {
+          background: var(--accent);
+          color: #000;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: 700;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .btn-save-row:hover {
+          background: #fff;
+        }
+      `}</style>
     </div>
   );
 }

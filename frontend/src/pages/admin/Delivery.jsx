@@ -87,19 +87,19 @@ export default function Delivery() {
           <h3 style={{ marginBottom: 16 }}>{editingId ? 'Edit Pincode' : 'Add Pincode'}</h3>
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-              <input placeholder="Pincode (6 digits)" value={form.pincode} onChange={e => setForm({...form, pincode: e.target.value})} required maxLength={6} />
-              <input placeholder="City" value={form.city} onChange={e => setForm({...form, city: e.target.value})} required />
-              <input placeholder="State" value={form.state} onChange={e => setForm({...form, state: e.target.value})} required />
-              <select value={form.zone} onChange={e => setForm({...form, zone: e.target.value})}>
+              <input className="custom-input" placeholder="Pincode (6 digits)" value={form.pincode} onChange={e => setForm({...form, pincode: e.target.value})} required maxLength={6} />
+              <input className="custom-input" placeholder="City" value={form.city} onChange={e => setForm({...form, city: e.target.value})} required />
+              <input className="custom-input" placeholder="State" value={form.state} onChange={e => setForm({...form, state: e.target.value})} required />
+              <select className="custom-input" value={form.zone} onChange={e => setForm({...form, zone: e.target.value})}>
                 <option value="local">Local</option>
                 <option value="regional">Regional</option>
                 <option value="metro">Metro</option>
                 <option value="national">National</option>
                 <option value="remote">Remote</option>
               </select>
-              <input type="number" placeholder="Est. Days" value={form.estimatedDays} onChange={e => setForm({...form, estimatedDays: e.target.value})} required min={1} />
+              <input className="custom-input" type="number" placeholder="Est. Days" value={form.estimatedDays} onChange={e => setForm({...form, estimatedDays: e.target.value})} required min={1} />
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
-                <input type="checkbox" checked={form.codAvailable} onChange={e => setForm({...form, codAvailable: e.target.checked})} />
+                <input className="custom-checkbox" type="checkbox" checked={form.codAvailable} onChange={e => setForm({...form, codAvailable: e.target.checked})} />
                 COD Available
               </label>
             </div>
@@ -114,10 +114,11 @@ export default function Delivery() {
         <div style={{ background: 'var(--surface)', padding: 20, borderRadius: 10 }}>
           <h3 style={{ marginBottom: 16 }}><FiUpload /> Bulk Upload (JSON)</h3>
           <textarea 
+            className="custom-input"
             placeholder='[{"pincode":"110001","city":"New Delhi","state":"Delhi","zone":"metro","estimatedDays":4}]'
             value={bulkData}
             onChange={e => setBulkData(e.target.value)}
-            style={{ width: '100%', height: 120, padding: 10, background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)', marginBottom: 10, fontFamily: 'monospace' }}
+            style={{ width: '100%', height: 120, marginBottom: 10, fontFamily: 'monospace' }}
           />
           <button onClick={handleBulkUpload} className="btn-outline" style={{ padding: '8px 16px', fontSize: 13 }}>Upload JSON</button>
         </div>
@@ -152,11 +153,44 @@ export default function Delivery() {
               </tr>
             ))}
             {pincodes.length === 0 && !loading && (
-              <tr><td colSpan="7" style={{ textAlign: 'center' }}>No pincodes found</td></tr>
+              <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>No pincodes found</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <style>{`
+        .custom-input {
+          width: 100%;
+          padding: 10px 14px;
+          background: rgba(20, 20, 20, 0.6);
+          border: 1px solid var(--border);
+          color: var(--text);
+          border-radius: 8px;
+          font-size: 13px;
+          transition: all 0.2s;
+        }
+        .custom-input:focus {
+          outline: none;
+          border-color: var(--accent);
+          background: var(--bg);
+        }
+        .custom-checkbox {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+          accent-color: var(--accent);
+        }
+        .admin-table th {
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 12px;
+          color: var(--text2);
+        }
+        .admin-table td {
+          font-size: 14px;
+        }
+      `}</style>
     </div>
   );
 }
