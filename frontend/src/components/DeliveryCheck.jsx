@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from '../api/axios';
 import { FiMapPin, FiTruck, FiAlertCircle } from 'react-icons/fi';
 
