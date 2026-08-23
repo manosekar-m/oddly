@@ -26,7 +26,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const [paymentMode, setPaymentMode] = useState('razorpay');
+  const [paymentMode, setPaymentMode] = useState('upi');
   const [transactionId, setTransactionId] = useState('');
   const [screenshot, setScreenshot] = useState(null);
   const [screenshotPreview, setScreenshotPreview] = useState('');
@@ -315,8 +315,9 @@ export default function Checkout() {
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 20 }}>Payment</h3>
                 
                 <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
-                  <button type="button" onClick={() => setPaymentMode('razorpay')} style={{ flex: 1, padding: '12px', borderRadius: 8, background: paymentMode === 'razorpay' ? 'var(--accent)' : 'transparent', color: paymentMode === 'razorpay' ? '#000' : 'var(--text)', border: `1px solid ${paymentMode === 'razorpay' ? 'var(--accent)' : 'var(--border)'}`, fontWeight: 600, cursor: 'pointer' }}>
-                    Pay Online
+                  <button type="button" disabled style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', color: 'var(--text2)', border: '1px dashed var(--border)', fontWeight: 600, cursor: 'not-allowed', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <span>Pay Online</span>
+                    <span style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0.5 }}>In Development</span>
                   </button>
                   <button type="button" onClick={() => setPaymentMode('upi')} style={{ flex: 1, padding: '12px', borderRadius: 8, background: paymentMode === 'upi' ? 'var(--accent)' : 'transparent', color: paymentMode === 'upi' ? '#000' : 'var(--text)', border: `1px solid ${paymentMode === 'upi' ? 'var(--accent)' : 'var(--border)'}`, fontWeight: 600, cursor: 'pointer' }}>
                     Manual UPI
