@@ -104,24 +104,24 @@ export default function ShippingConfig() {
           </thead>
           <tbody>
             {rates.map((rate, idx) => (
-              <tr key={rate._id}>
-                <td><strong style={{ textTransform: 'uppercase', letterSpacing: 1, fontSize: 13 }}>{rate.zone}</strong></td>
-                <td>
+              <tr key={rate._id} style={{ background: 'rgba(255, 255, 255, 0.02)', borderBottom: '1px solid var(--border)' }}>
+                <td style={{ padding: '16px' }}><strong style={{ textTransform: 'uppercase', letterSpacing: 1, fontSize: 13 }}>{rate.zone}</strong></td>
+                <td style={{ padding: '16px' }}>
                   <input type="number" className="table-input" value={rate.baseRate} onChange={e => handleRateChange(idx, 'baseRate', e.target.value)} />
                 </td>
-                <td>
+                <td style={{ padding: '16px' }}>
                   <input type="number" className="table-input" value={rate.extraRatePer500g} onChange={e => handleRateChange(idx, 'extraRatePer500g', e.target.value)} />
                 </td>
-                <td>
+                <td style={{ padding: '16px' }}>
                   <input type="number" className="table-input" value={rate.codCharge} onChange={e => handleRateChange(idx, 'codCharge', e.target.value)} />
                 </td>
-                <td>
+                <td style={{ padding: '16px' }}>
                   <input type="number" className="table-input" value={rate.freeShippingThreshold} onChange={e => handleRateChange(idx, 'freeShippingThreshold', e.target.value)} />
                 </td>
-                <td style={{ textAlign: 'center' }}>
+                <td style={{ textAlign: 'center', padding: '16px' }}>
                   <input type="checkbox" className="custom-checkbox" checked={rate.codAvailableDefault} onChange={e => handleRateChange(idx, 'codAvailableDefault', e.target.checked)} />
                 </td>
-                <td>
+                <td style={{ padding: '16px' }}>
                   <button onClick={() => handleSaveRate(rate)} className="btn-save-row">Save</button>
                 </td>
               </tr>
@@ -168,6 +168,22 @@ export default function ShippingConfig() {
         }
         .btn-save-row:hover {
           background: #fff;
+        }
+        .admin-table th {
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 12px;
+          color: var(--text2);
+          padding: 16px;
+          border-bottom: 1px solid var(--border);
+          background: rgba(0, 0, 0, 0.2);
+        }
+        .admin-table td {
+          font-size: 14px;
+        }
+        .admin-table {
+          width: 100%;
+          border-collapse: collapse;
         }
       `}</style>
     </div>

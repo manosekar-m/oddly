@@ -139,14 +139,18 @@ export default function Delivery() {
           </thead>
           <tbody>
             {pincodes.map(p => (
-              <tr key={p._id} style={{ opacity: p.isServiceable ? 1 : 0.5 }}>
-                <td><strong>{p.pincode}</strong></td>
-                <td>{p.city}, {p.state}</td>
-                <td><span className="badge badge-gold">{p.zone}</span></td>
-                <td>{p.estimatedDays} days</td>
-                <td>{p.codAvailable ? 'Yes' : 'No'}</td>
-                <td>{p.isServiceable ? 'Active' : 'Disabled'}</td>
-                <td>
+              <tr key={p._id} style={{ opacity: p.isServiceable ? 1 : 0.6, background: 'rgba(255, 255, 255, 0.02)', borderBottom: '1px solid var(--border)' }}>
+                <td style={{ padding: '16px' }}><strong>{p.pincode}</strong></td>
+                <td style={{ padding: '16px' }}>{p.city}, {p.state}</td>
+                <td style={{ padding: '16px' }}><span className="badge badge-gold" style={{ letterSpacing: 1 }}>{p.zone}</span></td>
+                <td style={{ padding: '16px' }}>{p.estimatedDays} days</td>
+                <td style={{ padding: '16px' }}>
+                  {p.codAvailable ? <span style={{ color: '#6ecf6e', fontWeight: 600, fontSize: 12, padding: '4px 8px', background: 'rgba(110,207,110,0.1)', borderRadius: 4 }}>YES</span> : <span style={{ color: 'var(--text2)', fontSize: 12 }}>NO</span>}
+                </td>
+                <td style={{ padding: '16px' }}>
+                  {p.isServiceable ? <span style={{ color: 'var(--accent)', fontWeight: 600, fontSize: 12, border: '1px solid var(--accent)', padding: '2px 8px', borderRadius: 4 }}>Active</span> : <span style={{ color: 'var(--danger)', fontSize: 12 }}>Disabled</span>}
+                </td>
+                <td style={{ padding: '16px' }}>
                   <button onClick={() => handleEdit(p)} style={{ background: 'none', border: 'none', color: '#ffb703', cursor: 'pointer', marginRight: 12 }}><FiEdit /></button>
                   <button onClick={() => handleDisable(p._id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}><FiTrash2 /></button>
                 </td>
@@ -186,9 +190,16 @@ export default function Delivery() {
           letter-spacing: 1px;
           font-size: 12px;
           color: var(--text2);
+          padding: 16px;
+          border-bottom: 1px solid var(--border);
+          background: rgba(0, 0, 0, 0.2);
         }
         .admin-table td {
           font-size: 14px;
+        }
+        .admin-table {
+          width: 100%;
+          border-collapse: collapse;
         }
       `}</style>
     </div>
