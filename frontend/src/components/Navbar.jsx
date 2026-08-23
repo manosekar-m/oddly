@@ -337,16 +337,14 @@ export default function Navbar() {
           left: 0;
           width: 100%;
           height: 100vh;
-          background: rgba(10, 10, 10, 0.98);
-          backdrop-filter: blur(30px);
-          -webkit-backdrop-filter: blur(30px);
+          background: #0a0a0a;
           display: flex;
           align-items: center;
           justify-content: center;
           opacity: 0;
           visibility: hidden;
           transition: all 0.4s ease;
-          z-index: 999;
+          z-index: 9999;
         }
         .mobile-menu.open {
           opacity: 1;
