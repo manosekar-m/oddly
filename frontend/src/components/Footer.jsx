@@ -104,10 +104,11 @@ export default function Footer() {
         }
         .footer-heading {
           font-family: var(--font-display);
-          font-size: 36px;
-          font-weight: 700;
+          font-size: 56px;
+          font-weight: 800;
           color: #fff;
           margin-bottom: 12px;
+          letter-spacing: -1px;
         }
         .footer-subtext {
           color: var(--text2);

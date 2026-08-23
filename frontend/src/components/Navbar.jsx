@@ -194,7 +194,7 @@ export default function Navbar() {
         }
         .logo-text {
           font-family: var(--font-display);
-          font-size: 26px;
+          font-size: 32px;
           font-weight: 800;
           color: #fff;
           letter-spacing: 2px;
