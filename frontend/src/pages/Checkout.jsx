@@ -448,6 +448,7 @@ export default function Checkout() {
             totalItems={totalItems}
             paymentMethod={paymentMode === 'razorpay' || paymentMode === 'upi' ? 'Prepaid' : 'COD'}
             onResult={setDeliveryResult}
+            initialPincode={form.pincode}
           />
           {step === 2 && (
             <div style={{ marginTop: 16, padding: 12, background: 'var(--surface)', borderRadius: 10, fontSize: 12, color: 'var(--text2)', lineHeight: 1.7 }}>

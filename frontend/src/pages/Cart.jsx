@@ -148,6 +148,7 @@ export default function Cart() {
               totalItems={totalItems}
               paymentMethod="Prepaid"
               onResult={setDeliveryResult}
+              initialPincode={user?.address?.pincode}
             />
           </div>
 

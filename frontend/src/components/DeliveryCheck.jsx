@@ -2,15 +2,15 @@ import { useState } from 'react';
 import axios from '../api/axios';
 import { FiMapPin, FiTruck, FiAlertCircle } from 'react-icons/fi';
 
-export default function DeliveryCheck({ cartValue, totalItems = 1, paymentMethod = 'Prepaid', onResult = () => {} }) {
-  const [pincode, setPincode] = useState('');
+export default function DeliveryCheck({ cartValue, totalItems = 1, paymentMethod = 'Prepaid', onResult = () => {}, initialPincode = '' }) {
+  const [pincode, setPincode] = useState(initialPincode || '');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [hasAutoChecked, setHasAutoChecked] = useState(false);
 
-  const handleCheck = async (e) => {
-    e.preventDefault();
-    if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
+  const performCheck = async (pinToCheck) => {
+    if (pinToCheck.length !== 6 || !/^\d+$/.test(pinToCheck)) {
       setError('Please enter a valid 6-digit pincode');
       return;
     }
@@ -20,13 +20,13 @@ export default function DeliveryCheck({ cartValue, totalItems = 1, paymentMethod
     
     try {
       const res = await axios.post('/delivery/check', {
-        pincode,
+        pincode: pinToCheck,
         cartValue,
         totalItems,
         paymentMethod
       });
       setResult(res.data);
-      onResult({ pincode, ...res.data });
+      onResult({ pincode: pinToCheck, ...res.data });
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -39,6 +39,23 @@ export default function DeliveryCheck({ cartValue, totalItems = 1, paymentMethod
       setLoading(false);
     }
   };
+
+  const handleCheck = (e) => {
+    e.preventDefault();
+    performCheck(pincode);
+  };
+
+  useEffect(() => {
+    if (initialPincode && initialPincode.length === 6 && !hasAutoChecked) {
+      setPincode(initialPincode);
+      performCheck(initialPincode);
+      setHasAutoChecked(true);
+    } else if (result && result.serviceable) {
+      // Re-run the check automatically if cart value, items, or payment method changes
+      performCheck(pincode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartValue, totalItems, paymentMethod, initialPincode]);
 
   return (
     <div className="delivery-check-widget">
