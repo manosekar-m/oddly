@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
     const user = await User.create({ name, email, mobile, password, otp, otpExpiry });
     
     if (email) { 
-      try { await sendOTPEmail(email, otp); } 
+      try { sendOTPEmail(email, otp).catch(e => console.log('Email background error:', e.message)); } 
       catch (e) { console.log('Email error:', e.message); } 
     }
     
@@ -115,7 +115,7 @@ exports.resendOTP = async (req, res) => {
     user.otp = otp; user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
     if (user.email) {
-      try { await sendOTPEmail(user.email, otp); }
+      try { sendOTPEmail(user.email, otp).catch(e => console.log('Email background error:', e.message)); }
       catch (e) { console.log('Email error:', e.message); }
     }
     
