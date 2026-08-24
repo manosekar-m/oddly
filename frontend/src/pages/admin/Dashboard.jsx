@@ -63,7 +63,7 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        <nav style={{ flex: 1, padding: '0 16px' }}>
+        <nav style={{ flex: 1, padding: '0 16px', overflowY: 'auto', paddingBottom: 16 }}>
           {navItems.map(item => (
             <NavLink
               key={item.path}
