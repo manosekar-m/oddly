@@ -29,12 +29,7 @@ exports.register = async (req, res) => {
     
     const user = await User.create({ name, email, mobile, password, otp, otpExpiry });
     
-    if (email) { 
-      try { sendOTPEmail(email, otp).catch(e => console.log('Email background error:', e.message)); } 
-      catch (e) { console.log('Email error:', e.message); } 
-    }
-    
-    res.status(201).json({ message: 'OTP sent to your email. Please verify.', userId: user._id });
+    res.status(201).json({ message: 'OTP generated in dev mode. Please verify.', userId: user._id, otp });
   } catch (err) { 
     res.status(500).json({ message: err.message }); 
   }
@@ -114,11 +109,6 @@ exports.resendOTP = async (req, res) => {
     const otp = generateOTP();
     user.otp = otp; user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
-    if (user.email) {
-      try { sendOTPEmail(user.email, otp).catch(e => console.log('Email background error:', e.message)); }
-      catch (e) { console.log('Email error:', e.message); }
-    }
-    
-    res.json({ message: 'OTP sent to registered email', userId: user._id });
+    res.json({ message: 'OTP generated in dev mode', userId: user._id, otp });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };

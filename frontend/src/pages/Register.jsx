@@ -10,6 +10,7 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState('');
   const [otp, setOtp] = useState('');
+  const [shownOtp, setShownOtp] = useState('');
   const { login } = useAuth();
   const [form, setForm] = useState({ name: '', email: '', mobile: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +22,8 @@ export default function Register() {
     try {
       const { data } = await axios.post('/auth/register', form);
       setUserId(data.userId);
-      toast.success('OTP sent! Check your email.');
+      if (data.otp) setShownOtp(data.otp);
+      toast.success('OTP generated successfully');
       setStep(2);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
@@ -43,8 +45,9 @@ export default function Register() {
 
   const handleResend = async () => {
     try {
-      await axios.post('/auth/resend-otp', { userId });
-      toast.success('OTP resent to your email!');
+      const { data } = await axios.post('/auth/resend-otp', { userId });
+      if (data.otp) setShownOtp(data.otp);
+      toast.success('OTP regenerated!');
     } catch { toast.error('Failed to resend'); }
   };
 
@@ -86,7 +89,13 @@ export default function Register() {
             </form>
           ) : (
             <form onSubmit={handleVerify}>
-              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP sent to your email</p>
+              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP shown below</p>
+              {shownOtp && (
+                <div style={{ background: 'var(--surface)', border: '1px solid var(--accent)', borderRadius: 10, padding: '12px 16px', marginBottom: 20, textAlign: 'center' }}>
+                  <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>Your OTP (dev mode)</p>
+                  <p style={{ fontSize: 28, fontWeight: 800, letterSpacing: 8, color: 'var(--accent)' }}>{shownOtp}</p>
+                </div>
+              )}
               <div className="form-group">
                 <label className="label">OTP</label>
                 <input placeholder="1234" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4} required style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }} />

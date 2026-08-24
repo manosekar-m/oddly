@@ -5,6 +5,9 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  connectionTimeout: 20000,
+  greetingTimeout: 20000,
+  socketTimeout: 20000,
 });
 
 const sendOTPEmail = async (email, otp) => {
