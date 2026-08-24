@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import toast from 'react-hot-toast';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState('');
   const [otp, setOtp] = useState('');
-  const [shownOtp, setShownOtp] = useState('');
+  const { login } = useAuth();
   const [form, setForm] = useState({ name: '', email: '', mobile: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,6 @@ export default function Register() {
     try {
       const { data } = await axios.post('/auth/register', form);
       setUserId(data.userId);
-      if (data.otp) setShownOtp(data.otp);
       toast.success('OTP sent! Check your email.');
       setStep(2);
     } catch (err) {
@@ -32,9 +32,10 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('/auth/verify-otp', { userId, otp });
-      toast.success('Account verified! Please login.');
-      navigate('/login');
+      const { data } = await axios.post('/auth/verify-otp', { userId, otp });
+      login(data.user, data.token);
+      toast.success('Account verified successfully!');
+      navigate('/');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid OTP');
     } finally { setLoading(false); }
@@ -42,9 +43,8 @@ export default function Register() {
 
   const handleResend = async () => {
     try {
-      const { data } = await axios.post('/auth/resend-otp', { userId });
-      if (data.otp) setShownOtp(data.otp);
-      toast.success('OTP resent!');
+      await axios.post('/auth/resend-otp', { userId });
+      toast.success('OTP resent to your email!');
     } catch { toast.error('Failed to resend'); }
   };
 
@@ -87,12 +87,6 @@ export default function Register() {
           ) : (
             <form onSubmit={handleVerify}>
               <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP sent to your email</p>
-              {shownOtp && (
-                <div style={{ background: 'var(--surface)', border: '1px solid var(--accent)', borderRadius: 10, padding: '12px 16px', marginBottom: 20, textAlign: 'center' }}>
-                  <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>Your OTP (dev mode)</p>
-                  <p style={{ fontSize: 28, fontWeight: 800, letterSpacing: 8, color: 'var(--accent)' }}>{shownOtp}</p>
-                </div>
-              )}
               <div className="form-group">
                 <label className="label">OTP</label>
                 <input placeholder="1234" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4} required style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }} />

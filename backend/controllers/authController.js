@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
       catch (e) { console.log('Email error:', e.message); } 
     }
     
-    res.status(201).json({ message: 'OTP sent to your email. Please verify.', userId: user._id, otp });
+    res.status(201).json({ message: 'OTP sent to your email. Please verify.', userId: user._id });
   } catch (err) { 
     res.status(500).json({ message: err.message }); 
   }
@@ -119,6 +119,6 @@ exports.resendOTP = async (req, res) => {
       catch (e) { console.log('Email error:', e.message); }
     }
     
-    res.json({ message: 'OTP sent to registered email', userId: user._id, otp });
+    res.json({ message: 'OTP sent to registered email', userId: user._id });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
