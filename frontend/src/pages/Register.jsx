@@ -86,7 +86,7 @@ export default function Register() {
             </form>
           ) : (
             <form onSubmit={handleVerify}>
-              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 6-digit OTP sent to your email</p>
+              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP sent to your email and mobile</p>
               {shownOtp && (
                 <div style={{ background: 'var(--surface)', border: '1px solid var(--accent)', borderRadius: 10, padding: '12px 16px', marginBottom: 20, textAlign: 'center' }}>
                   <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>Your OTP (dev mode)</p>
@@ -95,7 +95,7 @@ export default function Register() {
               )}
               <div className="form-group">
                 <label className="label">OTP</label>
-                <input placeholder="123456" value={otp} onChange={e => setOtp(e.target.value)} maxLength={6} required style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }} />
+                <input placeholder="1234" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4} required style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }} />
               </div>
               <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>{loading ? 'Verifying...' : 'Verify OTP'}</button>
               <button type="button" onClick={handleResend} style={{ width: '100%', marginTop: 12, background: 'none', border: 'none', color: 'var(--text2)', fontSize: 13 }}>Didn't receive? Resend OTP</button>

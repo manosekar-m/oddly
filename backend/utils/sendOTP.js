@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -19,4 +20,30 @@ const sendOTPEmail = async (email, otp) => {
   });
 };
 
-module.exports = { sendOTPEmail };
+const sendSMSOTP = async (mobile, otp) => {
+  const message = `Welcome to oddly and your otp is ${otp} thankyou`;
+  
+  if (!process.env.FAST2SMS_API_KEY) {
+    console.log(`\n[SMS SIMULATION] To: ${mobile} | Message: ${message}\n`);
+    return;
+  }
+
+  try {
+    const response = await axios.get('https://www.fast2sms.com/dev/bulkV2', {
+      params: {
+        authorization: process.env.FAST2SMS_API_KEY,
+        route: 'v3',
+        sender_id: 'TXTIND',
+        message: message,
+        language: 'english',
+        flash: 0,
+        numbers: mobile
+      }
+    });
+    console.log(`SMS Sent Successfully to ${mobile}:`, response.data);
+  } catch (error) {
+    console.error('Failed to send SMS via Fast2SMS:', error.response ? error.response.data : error.message);
+  }
+};
+
+module.exports = { sendOTPEmail, sendSMSOTP };

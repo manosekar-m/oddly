@@ -1,8 +1,8 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const { sendOTPEmail } = require('../utils/sendOTP');
+const { sendOTPEmail, sendSMSOTP } = require('../utils/sendOTP');
 
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
 exports.register = async (req, res) => {
@@ -32,6 +32,11 @@ exports.register = async (req, res) => {
     if (email) { 
       try { await sendOTPEmail(email, otp); } 
       catch (e) { console.log('Email error:', e.message); } 
+    }
+    
+    if (mobile) {
+      try { await sendSMSOTP(mobile, otp); }
+      catch (e) { console.log('SMS error:', e.message); }
     }
     
     res.status(201).json({ message: 'OTP sent. Please verify.', userId: user._id, otp });
@@ -114,7 +119,16 @@ exports.resendOTP = async (req, res) => {
     const otp = generateOTP();
     user.otp = otp; user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
-    if (user.email) { try { await sendOTPEmail(user.email, otp); } catch (e) { console.log('Email error:', e.message); } }
-    res.json({ message: 'OTP resent', otp });
+    if (user.email) {
+      try { await sendOTPEmail(user.email, otp); }
+      catch (e) { console.log('Email error:', e.message); }
+    }
+    
+    if (user.mobile) {
+      try { await sendSMSOTP(user.mobile, otp); }
+      catch (e) { console.log('SMS error:', e.message); }
+    }
+
+    res.json({ message: 'OTP sent to registered email and mobile', userId: user._id, otp });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
