@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { FiEye, FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiClock, FiDownload } from 'react-icons/fi';
+import { FiEye, FiSearch, FiPackage, FiTruck, FiCheckCircle, FiXCircle, FiClock, FiDownload, FiTrash2 } from 'react-icons/fi';
 import * as XLSX from 'xlsx';
 
 export default function Orders() {
@@ -38,6 +38,21 @@ export default function Orders() {
       }
     } catch (err) {
       toast.error('Status update failed');
+    }
+  };
+
+  const deleteOrder = async (id) => {
+    if (window.confirm('Are you sure you want to delete this order?')) {
+      try {
+        await api.delete(`/orders/${id}`);
+        toast.success('Order deleted successfully');
+        setOrders(prev => prev.filter(o => o._id !== id));
+        if (selectedOrder?._id === id) {
+          setSelectedOrder(null);
+        }
+      } catch (err) {
+        toast.error('Failed to delete order');
+      }
     }
   };
 
@@ -186,9 +201,14 @@ export default function Orders() {
                     </span>
                   </td>
                   <td style={{ padding: '16px 20px' }}>
-                    <button onClick={() => setSelectedOrder(order)} style={{ padding: 8, background: 'none', border: '1px solid var(--border)', borderRadius: 8, color: 'var(--text2)', cursor: 'pointer' }}>
-                      <FiEye size={14} />
-                    </button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => setSelectedOrder(order)} style={{ padding: 8, background: 'none', border: '1px solid var(--border)', borderRadius: 8, color: 'var(--text2)', cursor: 'pointer' }} title="View Details">
+                        <FiEye size={14} />
+                      </button>
+                      <button onClick={() => deleteOrder(order._id)} style={{ padding: 8, background: 'none', border: '1px solid var(--danger)', borderRadius: 8, color: 'var(--danger)', cursor: 'pointer' }} title="Delete Order">
+                        <FiTrash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
