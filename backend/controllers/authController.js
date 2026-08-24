@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const { sendOTPEmail, sendSMSOTP } = require('../utils/sendOTP');
+const { sendOTPEmail } = require('../utils/sendOTP');
 
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -34,12 +34,7 @@ exports.register = async (req, res) => {
       catch (e) { console.log('Email error:', e.message); } 
     }
     
-    if (mobile) {
-      try { await sendSMSOTP(mobile, otp); }
-      catch (e) { console.log('SMS error:', e.message); }
-    }
-    
-    res.status(201).json({ message: 'OTP sent. Please verify.', userId: user._id, otp });
+    res.status(201).json({ message: 'OTP sent to your email. Please verify.', userId: user._id, otp });
   } catch (err) { 
     res.status(500).json({ message: err.message }); 
   }
@@ -124,11 +119,6 @@ exports.resendOTP = async (req, res) => {
       catch (e) { console.log('Email error:', e.message); }
     }
     
-    if (user.mobile) {
-      try { await sendSMSOTP(user.mobile, otp); }
-      catch (e) { console.log('SMS error:', e.message); }
-    }
-
-    res.json({ message: 'OTP sent to registered email and mobile', userId: user._id, otp });
+    res.json({ message: 'OTP sent to registered email', userId: user._id, otp });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };

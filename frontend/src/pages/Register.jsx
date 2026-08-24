@@ -86,7 +86,7 @@ export default function Register() {
             </form>
           ) : (
             <form onSubmit={handleVerify}>
-              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP sent to your email and mobile</p>
+              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 16, textAlign: 'center' }}>Enter the 4-digit OTP sent to your email</p>
               {shownOtp && (
                 <div style={{ background: 'var(--surface)', border: '1px solid var(--accent)', borderRadius: 10, padding: '12px 16px', marginBottom: 20, textAlign: 'center' }}>
                   <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>Your OTP (dev mode)</p>
