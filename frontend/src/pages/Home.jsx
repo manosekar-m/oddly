@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
 import { FiSearch, FiChevronDown, FiFilter, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import ScrollAnimation from '../components/ScrollAnimation';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -98,6 +99,8 @@ export default function Home() {
           </div>
         </motion.div>
       </div>
+
+      <ScrollAnimation />
 
       <div className="container page">
         {/* New Arrivals Section */}
